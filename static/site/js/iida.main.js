@@ -210,18 +210,6 @@
         templateUrl: 'next.tpl',
         controller: 'nextController',
         controllerAs: 'nextCtrl'
-      })
-      .state('next.test1', {
-        url: '/next/test1',
-        templateUrl: 'next.test1.tpl',
-        controller: 'nextTest1Controller',
-        controllerAs: 'ctrl'
-      })
-      .state('next.test2', {
-        url: '/next/test2',
-        templateUrl: 'next.test2.tpl',
-        controller: 'nextTest2Controller',
-        controllerAs: 'ctrl'
       });
   }]);
 
@@ -332,6 +320,9 @@
   angular.module(moduleName).controller('nextController', ['dataService', 'userResource', function(dataService, userResource) {
     var ctrl = this;
 
+    ctrl.title = 'NeXt UIテスト';
+    ctrl.description = 'トポロジデータを表示します。データは右上のギアをクリックして選択します。';
+
     // 未対応
     // データサービスが初期化時にquery()するなら、その完了状態を確認した方がいい。
     //
@@ -339,30 +330,7 @@
     // 初期状態ではfalseにして、usersデータのダウンロードに成功したらtrueに変える
     ctrl.isDataFetched = true;
 
-    // サイドバーに表示するメニューと、飛ばす先のui-routerステートの一覧を配列にしておく
-    ctrl.menus = [
-      {
-        title: 'test1',
-        description: 'test1',
-        state: 'next.test1'
-      },
-      {
-        title: 'test2',
-        description: 'test2',
-        state: 'next.test2'
-      }
-    ];
-  }]);
-
-  // コントローラ 'nextTest1Controller'
-  angular.module(moduleName).controller('nextTest1Controller', ['dataService', 'userResource', function(dataService, userResource) {
-    var ctrl = this;
-
-    ctrl.title = 'test1';
-
-    ctrl.getTopologyData = dataService.getTopologyData;
-
-    ctrl.clear = function() {
+    ctrl.data2 = function() {
       dataService.topologyData = {
         nodes: [{
           id: 0,
@@ -372,13 +340,6 @@
         }]
       };
     };
-  }]);
-
-  // コントローラ 'nextTest2Controller'
-  angular.module(moduleName).controller('nextTest2Controller', ['dataService', 'userResource', function(dataService, userResource) {
-    var ctrl = this;
-
-    ctrl.title = 'test2';
   }]);
 
   // NeXt UI用のディレクティブ
@@ -415,4 +376,5 @@
       }
     };
   }]);
+  //
 })();

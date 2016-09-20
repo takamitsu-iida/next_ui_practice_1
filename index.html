@@ -81,13 +81,38 @@
 </head>
 
 <!--
-  -- layout="column" コンテンツを縦並びにする
-  -- layout-fill 全画面に広げる
   -- 画面レイアウトを制御する最上位のコントローラtopControllerをバインドする
   -- style="overflow: hidden;" ウィンドウのスクロールバーは出さない。サイドナビがスクロールバーに追従しないため。スクロールバーが必要な場所にはmd-contentを使うこと。
   -->
-<body layout="column" layout-fill ng-cloak ng-controller="topController as tc" style="overflow: hidden;">
+<body flex layout-fill layout="column" ng-cloak ng-controller="topController as tc" style="overflow: hidden;">
 
+  <!-- 縦並びの上から１個目は常時表示するナビゲーション用のツールバー -->
+  <!-- ツールバーをbody直下に置かないと、後続のDIVのサイズ取得がうまくいかない -->
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+
+      <!-- ロゴを表示する -->
+      <h1><a href="#">{{:: tc.logoTitle }}</a></h1>
+
+      <!-- 右寄せするためのspan -->
+      <span flex></span>
+
+      <!-- リンク(仮置き) -->
+      <md-button ng-repeat="link in tc.links" aria-label="{{::link.label}}">
+        {{::link.title}}
+      </md-button>
+
+      <!-- 設定用アイコン(仮置き) -->
+      <span ng-controller="settingDialogController as sc">
+        <md-button aria-label="setting" class="md-icon-button", ng-click="sc.showSettingDialog()">
+          <md-icon md-font-icon="fa-gear" class="fa fa-2x"></md-icon>
+        </md-button>
+      </span>
+
+    </div>
+  </md-toolbar>
+
+  <!-- 縦並びの上から２個目はui-routerのコンテナにして、URLごとに内容を差し替える -->
   <div flex ui-view></div>
 
 </body>
@@ -130,7 +155,7 @@
       </md-card-content>
 
       <md-card-actions layout="column" layout-align="start">
-        <md-button aria-label="NeXt practice" ui-sref="next.test1">練習開始</md-button>
+        <md-button aria-label="NeXt practice" ui-sref="next">練習開始</md-button>
       </md-card-actions>
 
     </md-card>
@@ -192,54 +217,15 @@
   -->
 <script type="text/ng-template" id="next.tpl">
 
-  <!-- レイアウトはcolumnを継承している -->
-  <!-- 縦並びの上から１個目は常時表示するナビゲーション用のツールバー -->
-  <md-toolbar>
-    <div class="md-toolbar-tools">
-
-      <!-- メニュー表示 -->
-      <span>
-        <md-menu md-offset="35 0">
-          <md-button aria-label="Open menu" class="md-icon-button md-raised" ng-click="$mdOpenMenu($event)">
-            <md-icon md-menu-origin md-font-icon="fa-bars" class="fa"></md-icon>
-          </md-button>
-          <md-menu-content width="4">
-            <md-menu-item ng-repeat="menu in nextCtrl.menus" ng-click="null" ui-sref="{{menu.state}}">
-              <md-button>{{ menu.title }}</md-button>
-            </md-menu-item>
-          </md-menu-content>
-        </md-menu>
-      </span>
-
-      <!-- ロゴを表示する -->
-      <h1><a href="#">{{:: tc.logoTitle }}</a></h1>
-
-      <!-- 右寄せするためのspan -->
-      <span flex></span>
-
-      <!-- リンク(仮置き) -->
-      <md-button ng-repeat="link in tc.links" aria-label="{{::link.label}}">
-        {{::link.title}}
-      </md-button>
-
-      <!-- 設定用アイコン(仮置き) -->
-      <span ng-controller="settingDialogController as sc">
-        <md-button aria-label="setting" class="md-icon-button", ng-click="sc.showSettingDialog()">
-          <md-icon md-font-icon="fa-gear" class="fa fa-2x"></md-icon>
-        </md-button>
-      </span>
-
-    </div>
-  </md-toolbar>
-
   <!-- レイアウトはrowとして1行に収める -->
   <!-- layout-fillで上下左右に広げる -->
   <div layout="row" flex layout-fill layout-padding>
 
     <!-- 左側 -->
-    <!-- URLごとに内容を差し替える -->
-    <div flex layout="column">
-      <div flex ui-view></div>
+    <div flex layout-fill>
+      <h1>{{::nextCtrl.title}}</h1>
+      <p>{{::nextCtrl.description}}</p>
+      <div flex layout-fill iida-nx-shell></div>
     </div>
 
     <!-- 右側 -->
@@ -257,39 +243,6 @@
   </div>
 
 <!-- next.tpl 終わり -->
-</script>
-
-
-<!--
-  -- next.test1
-  -- url: '/next/test1',
-  -- templateUrl: 'next.test1.tpl',
-  -- controller: 'nextTest1Controller',
-  -- controllerAs: 'ctrl'
-  -->
-<script type="text/ng-template" id="next.test1.tpl">
-  <div flex layout-fill>
-    <div>
-      <h1>{{::ctrl.title}}</h1>
-      <md-button aria-label="test button" ng-click="ctrl.clear()">データ消去</md-button>
-    </div>
-    <div flex layout-fill iida-nx-shell></div>
-  </div>
-</script>
-
-
-<!--
-  -- next.test2
-  -- url: '/next/test2',
-  -- templateUrl: 'next.test2.tpl',
-  -- controller: 'nextTest2Controller',
-  -- controllerAs: 'ctrl'
-  -->
-<script type="text/ng-template" id="next.test2.tpl">
-  <div>
-    <h1>{{::ctrl.title}}</h1>
-  </div>
-  <div flex layout-fill iida-nx-shell></div>
 </script>
 
 </html>
