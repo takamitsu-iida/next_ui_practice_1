@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja" ng-app="iida.app">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <!-- IE9以降で正しく機能するようにする -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- description -->
+  <meta name="description" content="NeXt UI trial application">
+  <meta name="keywords" content="NeXt angular angularjs material">
+  <meta name="author" content="Takamitsu IIDA">
+
+  <!-- viewportの設定 -->
+  <!-- width=device-width 表示領域の幅を端末画面の幅に設定 -->
+  <!-- initial-scale=1 表示倍率を１倍に設定 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- faviconの設定 -->
+  <!--
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="bookmark" href="/favicon.ico" />
+  -->
+
+  <!-- ブラウザのウィンドウやタブに表示されるタイトル -->
+  <title>NeXt trial</title>
+
+  <!-- Font Awesome -->
+  <link href="./static/font-awesome-4.6.3/css/font-awesome.css" rel="stylesheet">
+
+  <!-- AngularJS -->
+  <script src="./static/angular-1.5.8/angular.min.js"></script>
+
+  <!-- Angular Resource -->
+  <script src="./static/angular-1.5.8/angular-resource.min.js"></script>
+
+  <!-- Angular animate -->
+  <script src="./static/angular-1.5.8/angular-animate.min.js"></script>
+
+  <!-- Angular aria -->
+  <script src="./static/angular-1.5.8/angular-aria.min.js"></script>
+
+  <!-- Angular messages -->
+  <script src="./static/angular-1.5.8/angular-messages.min.js"></script>
+
+  <!-- Angular material -->
+  <script src="./static/angular-material-1.1.1/angular-material.min.js"></script>
+  <link href="./static/angular-material-1.1.1/angular-material.min.css" rel="stylesheet">
+
+  <!-- Angular materialはRobotoフォントを前提にしているが、使わない -->
+  <!--
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900,300italic,400italic,500italic,700italic,900italic">
+  -->
+
+  <!-- Angular UI Router -->
+  <script src="./static/angular-ui-router-0.2.18/angular-ui-router.min.js"></script>
+
+  <!-- angular-loading-bar -->
+  <script src="./static/angular-loading-bar/build/loading-bar.min.js"></script>
+  <link href="./static/angular-loading-bar/build/loading-bar.min.css" rel="stylesheet">
+
+  <!-- angular-utils-pagination -->
+  <!-- いまは使わない。使うときには 'angularUtils.directives.dirPagination' を注入する
+  <script src="./static/angular-utils-pagination/dirPagination.js"></script>
+  -->
+
+  <!-- NeXt UI Toolkit -->
+  <script src="./static/next-0.9.1-Beryllium-SR1/js/next.min.js"></script>
+  <link rel="stylesheet" href="./static/next-0.9.1-Beryllium-SR1/css/next.min.css">
+
+  <!-- サイトのCSS -->
+  <link href="./static/site/css/site.css" rel="stylesheet">
+
+  <!-- サイトのJavaScript -->
+  <script src="./static/site/js/iida.startup.js"></script>
+  <script src="./static/site/js/iida.topologyData.js"></script>
+  <script src="./static/site/js/iida.nextui.js"></script>
+  <script src="./static/site/js/iida.main.js"></script>
+
+</head>
+
+<!--
+  -- layout="column" コンテンツを縦並びにする
+  -- layout-fill 全画面に広げる
+  -- 画面レイアウトを制御する最上位のコントローラtopControllerをバインドする
+  -- style="overflow: hidden;" ウィンドウのスクロールバーは出さない。サイドナビがスクロールバーに追従しないため。スクロールバーが必要な場所にはmd-contentを使うこと。
+  -->
+<body layout="column" layout-fill ng-cloak ng-controller="topController as tc" style="overflow: hidden;">
+
+  <div flex ui-view></div>
+
+</body>
+
+
+<!--
+  -- ******************
+  -- 以下、先読みスクリプト
+  -- ******************
+  -->
+
+<!--
+  -- トップページ
+  -- index
+  -- url: '/',
+  -- templateUrl: 'index.tpl',
+  -- controller: 'indexController',
+  -- controllerAs: 'indexCtrl'
+  -->
+<script type="text/ng-template" id="index.tpl">
+
+  <md-content md-component-id="index" flex layout="row" layout-margin layout-align="center start">
+    <md-card flex="66" layout-padding>
+
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">{{ indexCtrl.title }}</span>
+        </md-card-title-text>
+      </md-card-title>
+
+      <md-card-content>
+        <p>{{ indexCtrl.description }}</p>
+        <md-list-item class="md-3-line">
+          <div class="md-list-item-text" layout="column" layout-align="start start">
+            <h3>{{ indexCtrl.author }}</h3>
+            <h4>{{ indexCtrl.date }}</h4>
+            <p>{{ indexCtrl.mail }}</p>
+          </div>
+        </md-list-item>
+      </md-card-content>
+
+      <md-card-actions layout="column" layout-align="start">
+        <md-button aria-label="NeXt practice" ui-sref="next.test1">練習開始</md-button>
+      </md-card-actions>
+
+    </md-card>
+  </md-content>
+
+</script>
+
+
+<!--
+  -- 設定ダイアログのテンプレート
+  -- controllerAs: 'sc',
+  -- templateUrl: 'setting.tpl',
+  -- parent: angular.element(document.body)
+-->
+<script type="text/ng-template" id="setting.tpl">
+
+  <md-dialog aria-label="Setting" flex="40">
+    <!-- ダイアログの上段にツールバーを使ってタイトルを付ける -->
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Setting</h2> <span flex></span>
+        <md-button aria-label="close dialog" class="md-icon-button" ng-click="sc.cancel()">
+          <md-icon md-font-icon="fa-times" class="fa fa-2x"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <!-- ダイアログのコンテンツ -->
+    <md-dialog-content>
+      <!-- md-dialog-contentクラスを使うと、いい具合にパディングされる -->
+      <div class="md-dialog-content">
+        <md-switch ng-model="sc.settingParam.debug" aria-label="Switch debug">
+          debug: {{ sc.settingParam.debug }}
+        </md-switch>
+        <md-switch ng-model="sc.settingParam.showConf" aria-label="Switch show config">
+          showConf: {{ sc.settingParam.showConf }}
+        </md-switch>
+      </div>
+    </md-dialog-content>
+
+    <!-- ダイアログの最下部、フッタ部分にボタンを配置する -->
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="sc.answer('ok')" md-autofocus>OK</md-button>
+      <md-button ng-click="sc.answer('cancel')">Cancel</md-button>
+    </md-dialog-actions>
+  </md-dialog>
+
+</script>
+
+
+<!--
+  -- NeXt UI練習ページ
+  -- next
+  -- url: '/next',
+  -- templateUrl: 'next.tpl',
+  -- controller: 'nextController',
+  -- controllerAs: 'nextCtrl'
+  -->
+<script type="text/ng-template" id="next.tpl">
+
+  <!-- レイアウトはcolumnを継承している -->
+  <!-- 縦並びの上から１個目は常時表示するナビゲーション用のツールバー -->
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+
+      <!-- メニュー表示 -->
+      <span>
+        <md-menu md-offset="35 0">
+          <md-button aria-label="Open menu" class="md-icon-button md-raised" ng-click="$mdOpenMenu($event)">
+            <md-icon md-menu-origin md-font-icon="fa-bars" class="fa"></md-icon>
+          </md-button>
+          <md-menu-content width="4">
+            <md-menu-item ng-repeat="menu in nextCtrl.menus" ng-click="null" ui-sref="{{menu.state}}">
+              <md-button>{{ menu.title }}</md-button>
+            </md-menu-item>
+          </md-menu-content>
+        </md-menu>
+      </span>
+
+      <!-- ロゴを表示する -->
+      <h1><a href="#">{{:: tc.logoTitle }}</a></h1>
+
+      <!-- 右寄せするためのspan -->
+      <span flex></span>
+
+      <!-- リンク(仮置き) -->
+      <md-button ng-repeat="link in tc.links" aria-label="{{::link.label}}">
+        {{::link.title}}
+      </md-button>
+
+      <!-- 設定用アイコン(仮置き) -->
+      <span ng-controller="settingDialogController as sc">
+        <md-button aria-label="setting" class="md-icon-button", ng-click="sc.showSettingDialog()">
+          <md-icon md-font-icon="fa-gear" class="fa fa-2x"></md-icon>
+        </md-button>
+      </span>
+
+    </div>
+  </md-toolbar>
+
+  <!-- レイアウトはrowとして1行に収める -->
+  <!-- layout-fillで上下左右に広げる -->
+  <div layout="row" flex layout-fill layout-padding>
+
+    <!-- 左側 -->
+    <!-- URLごとに内容を差し替える -->
+    <div flex layout="column">
+      <div flex ui-view></div>
+    </div>
+
+    <!-- 右側 -->
+    <!-- サービスが保持しているデータ一覧を常時表示する -->
+    <md-content md-component-id="main-right" class="md-whiteframe-3dp" flex-sm="35" flex-gt-sm="30" flex-gt-md="25" layout-align="end start">
+      <h4>データ配列</h4>
+      <div ng-controller="dataController as dataCtrl">
+        <pre>
+          {{dataCtrl.getTopologyData() | json}}
+        </pre>
+      </div>
+    </md-content>
+
+  <!-- 左右に割った行のおわり -->
+  </div>
+
+<!-- next.tpl 終わり -->
+</script>
+
+
+<!--
+  -- next.test1
+  -- url: '/next/test1',
+  -- templateUrl: 'next.test1.tpl',
+  -- controller: 'nextTest1Controller',
+  -- controllerAs: 'ctrl'
+  -->
+<script type="text/ng-template" id="next.test1.tpl">
+  <div flex layout-fill>
+    <div>
+      <h1>{{::ctrl.title}}</h1>
+      <md-button aria-label="test button" ng-click="ctrl.clear()">データ消去</md-button>
+    </div>
+    <div flex layout-fill iida-nx-shell></div>
+  </div>
+</script>
+
+
+<!--
+  -- next.test2
+  -- url: '/next/test2',
+  -- templateUrl: 'next.test2.tpl',
+  -- controller: 'nextTest2Controller',
+  -- controllerAs: 'ctrl'
+  -->
+<script type="text/ng-template" id="next.test2.tpl">
+  <div>
+    <h1>{{::ctrl.title}}</h1>
+  </div>
+  <div flex layout-fill iida-nx-shell></div>
+</script>
+
+</html>
