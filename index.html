@@ -97,11 +97,13 @@
       <!-- github -->
       <md-button aria-label="github" class="md-icon-button" ng-href="{{:: tc.githubUrl }}">
         <md-icon md-font-icon="fa-github" class="fa fa-2x"></md-icon>
+        <md-tooltip>github</md-tooltip>
       </md-button>
 
       <!-- 設定用アイコン(仮置き) -->
-      <md-button aria-label="setting" class="md-icon-button" ng-controller="settingDialogController as sc" ng-click="sc.showSettingDialog()">
+      <md-button aria-label="setting" class="md-icon-button" ng-controller="settingDialogController as sc" ng-click="sc.showDialog()">
         <md-icon md-font-icon="fa-gear" class="fa fa-2x"></md-icon>
+        <md-tooltip>設定</md-tooltip>
       </md-button>
 
     </div>
@@ -150,12 +152,67 @@
       </md-card-content>
 
       <md-card-actions layout="column" layout-align="start">
-        <md-button aria-label="NeXt practice" ui-sref="next">練習開始</md-button>
+        <md-button aria-label="NeXt practice" class="md-primary md-raised" ui-sref="next">練習開始</md-button>
       </md-card-actions>
 
     </md-card>
   </md-content>
 
+</script>
+
+
+<!--
+  -- NeXt UI練習ページ
+  -- next
+  -- url: '/next',
+  -- templateUrl: 'next.tpl',
+  -- controller: 'nextController',
+  -- controllerAs: 'nextCtrl'
+  -->
+<script type="text/ng-template" id="next.tpl">
+
+  <!-- レイアウトはrowとして1行に収める -->
+  <!-- layout-fillで上下左右に広げる -->
+  <div layout="row" flex layout-fill layout-padding>
+
+    <!-- 左側 -->
+    <div flex>
+      <h1>{{::nextCtrl.title}}</h1>
+      <p>{{::nextCtrl.description}}</p>
+      <div flex layout-fill iida-nx-shell></div>
+    </div>
+
+    <!-- 右側 -->
+    <!-- サービスが保持しているデータ一覧を常時表示する -->
+    <md-content md-component-id="main-right" class="md-whiteframe-3dp" flex-sm="40" flex-gt-sm="35" flex-gt-md="33" layout-align="end start">
+      <div flex layout="row" layout-align="start center">
+        <h3>データ表示</h3> <span flex></span>
+        <md-button aria-label="edit" class="md-icon-button" ng-controller="editorDialogController as ec" ng-click="ec.showDialog()">
+          <md-icon md-font-icon="fa-pencil-square-o" class="fa fa-2x"></md-icon>
+          <md-tooltip>編集</md-tooltip>
+        </md-button>
+      </div>
+
+      <p><md-divider></md-divider></p>
+
+      <div ng-controller="dataController as dataCtrl">
+        <pre>{{dataCtrl.getTopologyData() | json}}</pre>
+      </div>
+      <!--
+      <form name="editorForm" ng-controller="dataController as dataCtrl">
+        <p ng-show="editorForm.editor.$error.json">JSON is invalid!</p>
+        <md-input-container class="md-block">
+          <label>JSONデータ</label>
+          <textarea name="editor" autocomplete="off" ng-model="dataCtrl.obj" json-editor md-select-on-focus></textarea>
+        </md-input-container>
+      </form>
+      -->
+    </md-content>
+
+  <!-- 左右に割った行のおわり -->
+  </div>
+
+<!-- next.tpl 終わり -->
 </script>
 
 
@@ -210,41 +267,45 @@
 
 
 <!--
-  -- NeXt UI練習ページ
-  -- next
-  -- url: '/next',
-  -- templateUrl: 'next.tpl',
-  -- controller: 'nextController',
-  -- controllerAs: 'nextCtrl'
-  -->
-<script type="text/ng-template" id="next.tpl">
+  -- 編集ダイアログのテンプレート
+  -- controllerAs: 'ec',
+  -- templateUrl: 'editor.tpl',
+  -- parent: angular.element(document.body)
+-->
+<script type="text/ng-template" id="editor.tpl">
 
-  <!-- レイアウトはrowとして1行に収める -->
-  <!-- layout-fillで上下左右に広げる -->
-  <div layout="row" flex layout-fill layout-padding>
-
-    <!-- 左側 -->
-    <div flex layout-fill>
-      <h1>{{::nextCtrl.title}}</h1>
-      <p>{{::nextCtrl.description}}</p>
-      <div flex layout-fill iida-nx-shell></div>
-    </div>
-
-    <!-- 右側 -->
-    <!-- サービスが保持しているデータ一覧を常時表示する -->
-    <md-content md-component-id="main-right" class="md-whiteframe-3dp" flex-sm="35" flex-gt-sm="30" flex-gt-md="25" layout-align="end start">
-      <h4>データ配列</h4>
-      <div ng-controller="dataController as dataCtrl">
-        <pre>
-          {{dataCtrl.getTopologyData() | json}}
-        </pre>
+  <md-dialog aria-label="Setting" flex-sm="90" flex-gt-sm="80" flex-gt-md="66">
+    <!-- ダイアログの上段にツールバーを使ってタイトルを付ける -->
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>{{:: ec.title}}</h2>
+        <span flex></span>
+        <span ng-show="editorForm.editor.$error.json">JSON is invalid!</span>
+        <span flex></span>
+        <md-button aria-label="close dialog" class="md-icon-button" ng-click="ec.cancel()">
+          <md-icon md-font-icon="fa-times" class="fa fa-2x"></md-icon>
+        </md-button>
       </div>
-    </md-content>
+    </md-toolbar>
 
-  <!-- 左右に割った行のおわり -->
-  </div>
+    <!-- ダイアログのコンテンツ -->
+    <md-dialog-content>
+      <!-- class="md-dialog-content"を使うと、いい具合にパディングされるが、ここでは使わない -->
+      <form name="editorForm">
+        <md-input-container class="md-block">
+          <textarea name="editor" autocomplete="off" rows="3" ng-model="ec.obj" json-editor></textarea>
+        </md-input-container>
+      </form>
+    </md-dialog-content>
 
-<!-- next.tpl 終わり -->
+    <!-- ダイアログの最下部、フッタ部分にボタンを配置する -->
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button class="md-primary" ng-disabled="editorForm.editor.$error.json" ng-click="ec.answer('ok')" md-autofocus>OK</md-button>
+      <md-button ng-click="ec.answer('cancel')">Cancel</md-button>
+    </md-dialog-actions>
+  </md-dialog>
+
 </script>
 
 </html>

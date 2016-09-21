@@ -155,32 +155,32 @@
     };
 
     // ダイアログを開く
-    ctrl.showSettingDialog = function(ev) {
+    ctrl.showDialog = function(ev) {
       // ダイアログを開くときに、サービスが持っている設定パラメータのコピーをコントローラに取り込む
-      ctrl.settingParam = {};
-      angular.copy(svc.settingParam, ctrl.settingParam);
+      ctrl.settingParam = angular.copy(svc.settingParam, {});
 
-      $mdDialog.show({
-        controller: function() {
-          return ctrl;
-        },
-        controllerAs: 'sc',
-        templateUrl: 'setting.tpl',
-        parent: angular.element(document.body),
-        targetEvent: ev,
-        clickOutsideToClose: true,
-        fullscreen: false
-      })
-      .then(function(answer) {
-        // answerは 'ok' もしくは 'cancel' が入っている
-        if (answer === 'ok') {
-          // OKボタンを押したときのみ、コントローラが保有する設定情報をサービス側に同期する
-          svc.settingParam = ctrl.settingParam;
-        }
-      }, function() {
-        // 外側をクリックした場合はここに来る。
-        // console.log('cancelled');
-      });
+      $mdDialog.show(
+        {
+          controller: function() {
+            return ctrl;
+          },
+          controllerAs: 'sc',
+          templateUrl: 'setting.tpl',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose: true,
+          fullscreen: false
+        })
+        .then(function(answer) {
+          // answerは 'ok' もしくは 'cancel' が入っている
+          if (answer === 'ok') {
+            // OKボタンを押したときのみ、コントローラが保有する設定情報をサービス側に同期する
+            svc.settingParam = ctrl.settingParam;
+          }
+        }, function() {
+          // 外側をクリックした場合はここに来る。
+          // console.log('cancelled');
+        });
     };
   }]);
 
@@ -216,7 +216,7 @@
     angular.extend(ctrl, settingParamService);
 
     // ツールバーの左に表示するロゴ
-    ctrl.logoTitle = 'NeXt UI Practice';
+    ctrl.logoTitle = 'NeXt trial';
 
     // githubのリンク
     ctrl.githubUrl = 'https://github.com/takamitsu-iida/next_ui_practice_1';
@@ -244,8 +244,8 @@
   angular.module(moduleName).controller('indexController', [function() {
     var ctrl = this;
 
-    ctrl.title = 'NeXt UI Practice';
-    ctrl.description = 'NeXt UIの練習です。';
+    ctrl.title = 'NeXt UIとAngularJSを組み合わせるテスト';
+    ctrl.description = 'Angular Materialでレイアウトを構成し、メインのコンテンツにNeXt UIを配置します。NeXt UIの仕様のため、IEでは動作しません。';
     ctrl.date = '2016/09/19';
     ctrl.author = 'Takamitsu IIDA';
     ctrl.mail = 'iida@jp.fujitsu.com';
@@ -256,7 +256,7 @@
   angular.module(moduleName).service('dataService', ['settingParamService', function(settingParamService) {
     var svc = this;
 
-    // 配列の中から、今選択されているデータを返却する関数
+    // 初期データ配列の中から、いま選択しているものを返却する関数
     // どれを使うかは設定項目なので、settingParamSerivceからインデックスを取り出す
     svc.getTopologyData = function() {
       // 配列のインデックスでどのデータを使うか切り替える
@@ -265,11 +265,21 @@
       return iida.topologyDatas[i];
     };
 
+    // データを差し替える関数
+    svc.setTopologyData = function(newValue) {
+      var settingParam = settingParamService.getSettingParam();
+      var i = settingParam.topologyDataIndex;
+      iida.topologyDatas[i] = newValue;
+    };
+
     // キャッシュデータ
-    // NxShellで操作するとxとyのデータが書き換えられてしまうので、キャッシュしたデータを使う。
-    svc.topologyDataCached = {};
-    svc.getTopologyDataCached = function() {
-      return angular.copy(svc.getTopologyData(), svc.getTopologyDataCached);
+    // NxShellで操作するとxとyの値が書き換えられてしまうので、キャッシュしたデータを使う。
+    svc.topologyDataNx = {};
+
+    // キャッシュデータを取得する関数
+    // angular.copy()でディープコピーを作り、それを返却する
+    svc.getTopologyDataNx = function() {
+      return angular.copy(svc.getTopologyData(), svc.getTopologyDataNx);
     };
   }]);
 
@@ -278,8 +288,11 @@
   angular.module(moduleName).controller('dataController', ['dataService', function(dataService) {
     var ctrl = this;
 
-    // dataServiceをミックスインして、getTopologyData()を呼び出せるようにする
+    // dataServiceをミックスイン
     angular.extend(ctrl, dataService);
+
+    // エディタに表示するオブジェクト
+    ctrl.obj = ctrl.getTopologyData();
   }]);
 
   // REST APIを叩く$resourceファクトリ
@@ -325,8 +338,8 @@
   angular.module(moduleName).controller('nextController', ['dataService', 'userResource', function(dataService, userResource) {
     var ctrl = this;
 
-    ctrl.title = 'NeXt UIテスト';
-    ctrl.description = 'トポロジデータを表示します。データは右上のギアをクリックして選択します。';
+    ctrl.title = 'NeXt UIによるトポロジデータ表示';
+    ctrl.description = '初期データは右上のギアをクリックして選択します。';
 
     // 未対応
     // 初期化時にquery()するなら、その完了状態を確認した方がいい。
@@ -352,7 +365,7 @@
         // データの紐付けは任意のタイミングで行えるが、初期値は'ready'後がいいと思う。
         topology.on('ready', function() {
           // dataService -> dataController経由でデータを入手して、それをディープコピーして使う
-          var d = dataController.getTopologyDataCached();
+          var d = dataController.getTopologyDataNx();
           topology.data(d);
         });
 
@@ -366,14 +379,103 @@
         shell.start(topologyContainer);
 
         scope.$watch(dataController.getTopologyData, function(newValue, oldValue) {
-          var d = dataController.getTopologyDataCached();
+          var d = dataController.getTopologyDataNx();
           topology.data(d);
         });
       }
     };
   }]);
+
+  angular.module(moduleName).directive('jsonEditor', ['$timeout', function($timeout) {
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      link: function(scope, element, attrs, ngModelCtrl) {
+        function string2JSON(text) {
+          try {
+            var j = angular.fromJson(text);
+            ngModelCtrl.$setValidity('json', true);
+            return j;
+          } catch (err) {
+            // returning undefined results in a parser error as of angular-1.3-rc.0, and will not go through $validators
+            // return undefined
+            ngModelCtrl.$setValidity('json', false);
+            // return text;
+            return undefined;
+          }
+        }
+
+        function JSON2String(object) {
+          // NOTE that angular.toJson will remove all $$-prefixed values
+          // alternatively, use JSON.stringify(object, null, 2);
+          return angular.toJson(object, true);
+        }
+
+        // $validators is an object, where key is the error
+        // ngModelCtrl.$validators.json = isValidJson;
+
+        // array pipelines
+        ngModelCtrl.$parsers.push(string2JSON);
+        ngModelCtrl.$formatters.push(JSON2String);
+      }
+    };
+  }]);
+
+  // コントローラ 'editorDialogController'
+  // <md-button ng-controller="settingDialogController as sc" ng-click="sc.showDialog()">
+  // ダイアログとして表示するので、$mdDialogを注入する
+  angular.module(moduleName).controller('editorDialogController', ['dataService', '$mdDialog', function(dataService, $mdDialog) {
+    var ctrl = this;
+    var svc = dataService;
+
+    ctrl.title = 'JSONデータの編集';
+
+    // ダイアログを消す
+    ctrl.hide = function() {
+      $mdDialog.hide();
+    };
+
+    // ダイアログのキャンセルボタン
+    ctrl.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    // ダイアログからの戻り値
+    ctrl.answer = function(answer) {
+      $mdDialog.hide(answer);
+    };
+
+    // ダイアログを開く
+    ctrl.showDialog = function(ev) {
+      // ダイアログを開くときに、サービスが持っているデータのディープコピーをコントローラに取り込む
+      ctrl.obj = angular.copy(svc.getTopologyData(), {});
+
+      $mdDialog.show(
+        {
+          controller: function() {
+            return ctrl;
+          },
+          controllerAs: 'ec',
+          templateUrl: 'editor.tpl',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose: false, // 外をクリックしても閉じない
+          fullscreen: false
+        })
+        .then(function(answer) {
+          // answerは 'ok' もしくは 'cancel' が入っている
+          if (answer === 'ok') {
+            // OKボタンを押したときのみ、コントローラが保有する設定情報をサービス側に同期する
+            svc.setTopologyData(ctrl.obj);
+          }
+        }, function() {
+          // 外側をクリックした場合はここに来る。
+          // console.log('cancelled');
+        });
+    };
+  }]);
   //
 })();
 
-  // あとでみる
-  // http://codepen.io/maxbates/pen/AfEHz
+// あとでみる
+// http://codepen.io/maxbates/pen/AfEHz
