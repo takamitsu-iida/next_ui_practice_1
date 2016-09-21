@@ -8,10 +8,14 @@
     // ヒアドキュメント経由で静的データを取り込む場合、テキストデータをiida.heredoc配下にぶら下げる
     var heredoc = {};
 
+    // トポロジデータの配列を定義して、ここに格納していく
+    var topologyDatas = [];
+
     // 公開するオブジェクト
     return {
       moduleName: moduleName,
-      heredoc: heredoc
+      heredoc: heredoc,
+      topologyDatas: topologyDatas
     };
   })();
 })();

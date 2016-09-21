@@ -7,6 +7,10 @@
       // トポロジデータを格納するオブジェクト
       topologyData: {},
       // nx.graphic.Topologyオブジェクトを返すgetter
+      // var topology = topologyContainer.topology();
+      // topology.data(); でデータをゲット
+      // topology.data(obj); でデータをセット
+      // topology.on('ready', function() {}); でイベントハンドラをセット
       topology: {
         get: function() {
           return this.view('topology');

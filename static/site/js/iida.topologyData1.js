@@ -1,6 +1,6 @@
 /* global iida */
 
-iida.topologyData = {
+iida.topologyDatas.push({
   nodes: [{
     id: 0,
     x: 410,
@@ -119,4 +119,4 @@ iida.topologyData = {
     name: 'Node set 4',
     iconType: 'groupL'
   }]
-};
+});

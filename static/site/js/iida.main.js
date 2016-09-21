@@ -7,8 +7,7 @@
 
   // AngularJSにモジュールとして登録
   angular.module(moduleName, [
-    'ngResource', // REST APIを叩くのに必要
-    'angular-loading-bar', // ngResourceを使うときに合わせて注入すると便利
+    'ngResource',
     'ngAnimate',
     'ngMessages',
     'ngMaterial',
@@ -35,14 +34,6 @@
       .icon("setting", "./static/site/svg/ic_settings_white_24px.svg", 24);
     */
     // HTMLではこのように指定する <md-icon md-svg-icon="setting"></md-icon>
-  }]);
-
-  // angular-loading-barの動作設定
-  angular.module(moduleName).config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
-    // コンテナのidをloading-bar-containerとする
-    // cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
-    cfpLoadingBarProvider.includeSpinner = false;
-    cfpLoadingBarProvider.includeBar = true;
   }]);
 
   // $log設定
@@ -128,7 +119,10 @@
       debug: true,
 
       // コンフィグを表示するかどうか
-      showConf: false
+      showConf: false,
+
+      // 配列の中のどのデータを使うか
+      topologyDataIndex: 0
     };
 
     // 現在のsettingParamを返却する関数
@@ -214,7 +208,7 @@
   }]);
 
   // <body>にバインドする最上位のコントローラ
-  // 主にレイアウトを担当
+  // ロゴやレイアウトを担当
   angular.module(moduleName).controller('topController', ['settingParamService', '$mdMedia', '$window', function(settingParamService, $mdMedia, $window) {
     var ctrl = this;
 
@@ -223,6 +217,9 @@
 
     // ツールバーの左に表示するロゴ
     ctrl.logoTitle = 'NeXt UI Practice';
+
+    // githubのリンク
+    ctrl.githubUrl = 'https://github.com/takamitsu-iida/next_ui_practice_1';
 
     // ツールバーに表示するリンク
     ctrl.links = [{
@@ -235,7 +232,7 @@
       url: '#'
     }];
 
-    // back()でひとつ前のページに戻る
+    // ctrl.back()でひとつ前のページに戻る
     ctrl.back = function() {
       $window.history.back();
     };
@@ -256,15 +253,23 @@
 
   // データを格納するサービス
   // 'dataService'
-  angular.module(moduleName).service('dataService', [function() {
+  angular.module(moduleName).service('dataService', ['settingParamService', function(settingParamService) {
     var svc = this;
 
-    // iida.topodata.jsを読み込んだ結果できたオブジェクトを利用する
-    svc.topologyData = iida.topologyData;
-
-    // ユーザ一覧の配列を返却する関数
+    // 配列の中から、今選択されているデータを返却する関数
+    // どれを使うかは設定項目なので、settingParamSerivceからインデックスを取り出す
     svc.getTopologyData = function() {
-      return svc.topologyData;
+      // 配列のインデックスでどのデータを使うか切り替える
+      var settingParam = settingParamService.getSettingParam();
+      var i = settingParam.topologyDataIndex;
+      return iida.topologyDatas[i];
+    };
+
+    // キャッシュデータ
+    // NxShellで操作するとxとyのデータが書き換えられてしまうので、キャッシュしたデータを使う。
+    svc.topologyDataCached = {};
+    svc.getTopologyDataCached = function() {
+      return angular.copy(svc.getTopologyData(), svc.getTopologyDataCached);
     };
   }]);
 
@@ -324,22 +329,11 @@
     ctrl.description = 'トポロジデータを表示します。データは右上のギアをクリックして選択します。';
 
     // 未対応
-    // データサービスが初期化時にquery()するなら、その完了状態を確認した方がいい。
+    // 初期化時にquery()するなら、その完了状態を確認した方がいい。
     //
     // データを取得済みかどうか
     // 初期状態ではfalseにして、usersデータのダウンロードに成功したらtrueに変える
-    ctrl.isDataFetched = true;
-
-    ctrl.data2 = function() {
-      dataService.topologyData = {
-        nodes: [{
-          id: 0,
-          x: 410,
-          y: 100,
-          name: '12K-1'
-        }]
-      };
-    };
+    // ctrl.isDataFetched = true;
   }]);
 
   // NeXt UI用のディレクティブ
@@ -347,7 +341,7 @@
   angular.module(moduleName).directive('iidaNxShell', ['$timeout', function($timeout) {
     return {
       restrict: 'A',
-      controller: 'dataController',
+      controller: 'dataController', // controllerで指定したものがlink関数の第4引数に渡される
       link: function(scope, element, attrs, dataController) {
         // 定義済みのTopologyContainerクラスをインスタンス化する
         var topologyContainer = new iida.TopologyContainer();
@@ -355,10 +349,11 @@
         // その中には 'nx.graphic.Topology' クラスのオブジェクトが格納されているので、それを取り出しておく
         var topology = topologyContainer.topology();
 
-        // データの設定は任意のタイミングで行えるが、初期値は'ready'後がいいと思う。
+        // データの紐付けは任意のタイミングで行えるが、初期値は'ready'後がいいと思う。
         topology.on('ready', function() {
-          topology.data(dataController.getTopologyData());
-          // console.log(topology.data());
+          // dataService -> dataController経由でデータを入手して、それをディープコピーして使う
+          var d = dataController.getTopologyDataCached();
+          topology.data(d);
         });
 
         // 定義済みのシェルをインスタンス化する
@@ -371,10 +366,14 @@
         shell.start(topologyContainer);
 
         scope.$watch(dataController.getTopologyData, function(newValue, oldValue) {
-          topology.data(newValue);
+          var d = dataController.getTopologyDataCached();
+          topology.data(d);
         });
       }
     };
   }]);
   //
 })();
+
+  // あとでみる
+  // http://codepen.io/maxbates/pen/AfEHz
