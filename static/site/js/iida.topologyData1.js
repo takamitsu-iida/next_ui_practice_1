@@ -6,7 +6,7 @@
       {id: 1, x: 200, y: 180, iconType: 'Router', name: 'R-2'}
     ],
     links: [
-      {source: 0, target: 1}
+      {id: 0, source: 0, target: 1}
     ]
   };
 

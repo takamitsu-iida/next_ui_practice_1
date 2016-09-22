@@ -173,14 +173,14 @@
   -->
 <script type="text/ng-template" id="next.tpl">
 
-  <!-- レイアウトはrowとして1行に収める -->
-  <!-- layout-fillで上下左右に広げる -->
+  <!-- layout="row" 1行に収める -->
   <div layout="row" flex layout-fill layout-padding>
 
     <!-- 左側 -->
     <div flex>
       <h2>{{::nextCtrl.title}}</h2>
       <p>{{::nextCtrl.description}}</p>
+      <md-button aria-label="実験1" class="md-raised" ng-click="nextCtrl.doTest1()">実験1</md-button>
       <div flex layout-fill iida-nx-shell></div>
     </div>
 

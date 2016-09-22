@@ -1,4 +1,4 @@
-/* global angular, iida */
+/* global angular, nx, iida */
 (function() {
   'use strict';
 
@@ -325,7 +325,7 @@
   }]);
 
   // コントローラ 'nextController'
-  angular.module(moduleName).controller('nextController', ['dataService', 'userResource', function(dataService, userResource) {
+  angular.module(moduleName).controller('nextController', ['dataService', 'topologyContainerService', function(dataService, topologyContainerService) {
     var ctrl = this;
 
     ctrl.title = 'トポロジ表示';
@@ -337,10 +337,40 @@
     // データを取得済みかどうか
     // 初期状態ではfalseにして、usersデータのダウンロードに成功したらtrueに変える
     // ctrl.isDataFetched = true;
+
+    ctrl.doTest1 = function() {
+      var topology = topologyContainerService.topology;
+      var pathLayer = topology.getLayer('paths');
+
+      var link1 = topology.getLink(0);
+      if (!link1) {
+        return;
+      }
+
+      var path1 = new nx.graphic.Topology.Path({
+        pathPadding: [20, '50%'],
+        pathWidth: 10,
+        links: [link1],
+        arrow: 'end'
+      });
+
+      var path2 = new nx.graphic.Topology.Path({
+        pathPadding: [20, '50%'],
+        pathWidth: 10,
+        links: [link1],
+        reverse: true,
+        arrow: 'end'
+      });
+      pathLayer.addPath(path1);
+      pathLayer.addPath(path2);
+
+      // pathLayer.clear();
+    };
   }]);
 
-  // サービス 'nxService'
-  angular.module(moduleName).service('nxService', [function() {
+  // サービス 'topologyContainerService'
+  // topologyオブジェクトを共有できるようにサービス化する
+  angular.module(moduleName).service('topologyContainerService', [function() {
     var svc = this;
 
     // TopologyContainerクラスをインスタンス化する
@@ -348,12 +378,6 @@
 
     // その中には 'nx.graphic.Topology' クラスのオブジェクトが格納されているので、それを取り出しておく
     svc.topology = svc.topologyContainer.topology();
-
-    // 定義済みのシェルをインスタンス化する
-    svc.shell = new iida.NxShell();
-
-    // シェルとトポロジコンテナを紐付けて、動作開始
-    svc.shell.start(svc.topologyContainer);
   }]);
 
   // NeXt UI用のディレクティブ
@@ -361,26 +385,38 @@
   angular.module(moduleName).directive('iidaNxShell', [function() {
     return {
       restrict: 'A',
-      controller: ['dataService', 'nxService', function(dataService, nxService) {
+      controller: ['dataService', 'topologyContainerService', function(dataService, nxService) {
         var ctrl = this;
         angular.extend(ctrl, dataService);
         angular.extend(ctrl, nxService);
       }],
       link: function(scope, element, attrs, ctrl) {
-        // NeXt UIシェルをこのエレメントにぶら下げる
-        ctrl.shell.container(element[0]);
+        // topologyContainerとtopologyオブジェクトはサービスに保管してあるものを使う
+        var topologyContainer = ctrl.topologyContainer;
+        var topology = ctrl.topology;
 
         // データの紐付けは任意のタイミングで行えるが、初期データの設定は'ready'イベント後に実施する
-        ctrl.topology.on('ready', function() {
+        topology.on('ready', function() {
           var d = ctrl.getTopologyDataNx();
-          ctrl.topology.data(d);
+          topology.data(d);
         });
 
         // 変更を検知したら、再バインドする
         scope.$watch(ctrl.getTopologyData, function(newValue, oldValue) {
-          var d = ctrl.getTopologyDataNx();
-          ctrl.topology.data(d);
+          if (newValue) {
+            var d = ctrl.getTopologyDataNx();
+            topology.data(d);
+          }
         });
+
+        // NxShellをインスタンス化する
+        var shell = new iida.NxShell();
+
+        // シェルをこのエレメントの下にぶら下げる
+        shell.container(element[0]);
+
+        // シェルとトポロジコンテナを紐付けて、動作開始
+        shell.start(topologyContainer);
       }
     };
   }]);
