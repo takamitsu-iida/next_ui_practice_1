@@ -361,10 +361,10 @@
         reverse: true,
         arrow: 'end'
       });
+
+      pathLayer.clear();
       pathLayer.addPath(path1);
       pathLayer.addPath(path2);
-
-      // pathLayer.clear();
     };
   }]);
 
@@ -382,29 +382,24 @@
 
   // NeXt UI用のディレクティブ
   // <div iida-nx-shell></div>
-  angular.module(moduleName).directive('iidaNxShell', [function() {
+  // dataServiceからデータを取得し、topologyContainerServiceからtopologyデータを取得する
+  angular.module(moduleName).directive('iidaNxShell', ['dataService', 'topologyContainerService', function(dataService, topologyContainerService) {
     return {
       restrict: 'A',
-      controller: ['dataService', 'topologyContainerService', function(dataService, nxService) {
-        var ctrl = this;
-        angular.extend(ctrl, dataService);
-        angular.extend(ctrl, nxService);
-      }],
-      link: function(scope, element, attrs, ctrl) {
-        // topologyContainerとtopologyオブジェクトはサービスに保管してあるものを使う
-        var topologyContainer = ctrl.topologyContainer;
-        var topology = ctrl.topology;
+      link: function(scope, element, attrs) {
+        var topologyContainer = topologyContainerService.topologyContainer;
+        var topology = topologyContainerService.topology;
 
         // データの紐付けは任意のタイミングで行えるが、初期データの設定は'ready'イベント後に実施する
         topology.on('ready', function() {
-          var d = ctrl.getTopologyDataNx();
+          var d = dataService.getTopologyDataNx();
           topology.data(d);
         });
 
         // 変更を検知したら、再バインドする
-        scope.$watch(ctrl.getTopologyData, function(newValue, oldValue) {
+        scope.$watch(dataService.getTopologyData, function(newValue, oldValue) {
           if (newValue) {
-            var d = ctrl.getTopologyDataNx();
+            var d = dataService.getTopologyDataNx();
             topology.data(d);
           }
         });
