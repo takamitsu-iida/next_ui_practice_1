@@ -37,7 +37,7 @@
             // デフォルトはidなので、それをnameに変更する
             // modelという文字列は、固定
             label: 'model.name',
-            iconType: 'model.device_type' // 'model.iconType'
+            iconType: 'model.iconType' // 'model.device_type'
           },
           nodeSetConfig: {
             // ノードセットの設定

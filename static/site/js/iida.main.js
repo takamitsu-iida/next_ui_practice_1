@@ -220,13 +220,9 @@
 
     // ツールバーに表示するリンク
     ctrl.links = [{
-      title: 'リンク1',
-      label: 'link 1',
-      url: '#'
-    }, {
-      title: 'リンク2',
-      label: 'link 2',
-      url: '#'
+      title: 'API DOC',
+      label: 'NeXt UI Toolkit API Manual', // aria-labelとmd-tooltipに使用
+      url: './static/next-0.10.0-Boron/doc/index.html'
     }];
 
     // ctrl.back()でひとつ前のページに戻る
@@ -287,9 +283,6 @@
 
     // dataServiceをミックスイン
     angular.extend(ctrl, dataService);
-
-    // エディタに表示するオブジェクト
-    ctrl.obj = ctrl.getTopologyData();
   }]);
 
   // REST APIを叩く$resourceファクトリ
@@ -335,8 +328,8 @@
   angular.module(moduleName).controller('nextController', ['dataService', 'userResource', function(dataService, userResource) {
     var ctrl = this;
 
-    ctrl.title = 'NeXt UIによるトポロジデータ表示';
-    ctrl.description = '初期データは右上のギアをクリックして選択します。';
+    ctrl.title = 'トポロジ表示';
+    ctrl.description = '初期データは右上のギアをクリックして選択';
 
     // 未対応
     // 初期化時にquery()するなら、その完了状態を確認した方がいい。
@@ -346,44 +339,56 @@
     // ctrl.isDataFetched = true;
   }]);
 
+  // サービス 'nxService'
+  angular.module(moduleName).service('nxService', [function() {
+    var svc = this;
+
+    // TopologyContainerクラスをインスタンス化する
+    svc.topologyContainer = new iida.TopologyContainer();
+
+    // その中には 'nx.graphic.Topology' クラスのオブジェクトが格納されているので、それを取り出しておく
+    svc.topology = svc.topologyContainer.topology();
+
+    // 定義済みのシェルをインスタンス化する
+    svc.shell = new iida.NxShell();
+
+    // シェルとトポロジコンテナを紐付けて、動作開始
+    svc.shell.start(svc.topologyContainer);
+  }]);
+
   // NeXt UI用のディレクティブ
   // <div iida-nx-shell></div>
-  angular.module(moduleName).directive('iidaNxShell', ['$timeout', function($timeout) {
+  angular.module(moduleName).directive('iidaNxShell', [function() {
     return {
       restrict: 'A',
-      controller: 'dataController', // controllerで指定したものがlink関数の第4引数に渡される
-      link: function(scope, element, attrs, dataController) {
-        // 定義済みのTopologyContainerクラスをインスタンス化する
-        var topologyContainer = new iida.TopologyContainer();
+      controller: ['dataService', 'nxService', function(dataService, nxService) {
+        var ctrl = this;
+        angular.extend(ctrl, dataService);
+        angular.extend(ctrl, nxService);
+      }],
+      link: function(scope, element, attrs, ctrl) {
+        // NeXt UIシェルをこのエレメントにぶら下げる
+        ctrl.shell.container(element[0]);
 
-        // その中には 'nx.graphic.Topology' クラスのオブジェクトが格納されているので、それを取り出しておく
-        var topology = topologyContainer.topology();
-
-        // データの紐付けは任意のタイミングで行えるが、初期値は'ready'後がいいと思う。
-        topology.on('ready', function() {
-          // dataService -> dataController経由でデータを入手して、それをディープコピーして使う
-          var d = dataController.getTopologyDataNx();
-          topology.data(d);
+        // データの紐付けは任意のタイミングで行えるが、初期データの設定は'ready'イベント後に実施する
+        ctrl.topology.on('ready', function() {
+          var d = ctrl.getTopologyDataNx();
+          ctrl.topology.data(d);
         });
 
-        // 定義済みのシェルをインスタンス化する
-        var shell = new iida.NxShell();
-
-        // シェルをこのエレメントにぶら下げる
-        shell.container(element[0]);
-
-        // シェルとトポロジコンテナを紐付けて、動作開始
-        shell.start(topologyContainer);
-
-        scope.$watch(dataController.getTopologyData, function(newValue, oldValue) {
-          var d = dataController.getTopologyDataNx();
-          topology.data(d);
+        // 変更を検知したら、再バインドする
+        scope.$watch(ctrl.getTopologyData, function(newValue, oldValue) {
+          var d = ctrl.getTopologyDataNx();
+          ctrl.topology.data(d);
         });
       }
     };
   }]);
 
-  angular.module(moduleName).directive('jsonEditor', ['$timeout', function($timeout) {
+  // jsonEditorディレクティブ
+  // <textarea json-editor>
+  // http://codepen.io/maxbates/pen/AfEHz
+  angular.module(moduleName).directive('jsonEditor', [function() {
     return {
       restrict: 'A',
       require: 'ngModel',
@@ -394,8 +399,6 @@
             ngModelCtrl.$setValidity('json', true);
             return j;
           } catch (err) {
-            // returning undefined results in a parser error as of angular-1.3-rc.0, and will not go through $validators
-            // return undefined
             ngModelCtrl.$setValidity('json', false);
             // return text;
             return undefined;
@@ -407,9 +410,6 @@
           // alternatively, use JSON.stringify(object, null, 2);
           return angular.toJson(object, true);
         }
-
-        // $validators is an object, where key is the error
-        // ngModelCtrl.$validators.json = isValidJson;
 
         // array pipelines
         ngModelCtrl.$parsers.push(string2JSON);
@@ -444,7 +444,7 @@
 
     // ダイアログを開く
     ctrl.showDialog = function(ev) {
-      // ダイアログを開くときに、サービスが持っているデータのディープコピーをコントローラに取り込む
+      // ダイアログを開くときに、サービスが持っているデータのディープコピーを作って使う
       ctrl.obj = angular.copy(svc.getTopologyData(), {});
 
       $mdDialog.show(
@@ -473,6 +473,3 @@
   }]);
   //
 })();
-
-// あとでみる
-// http://codepen.io/maxbates/pen/AfEHz

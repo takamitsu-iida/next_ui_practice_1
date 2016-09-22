@@ -67,6 +67,7 @@
   <script src="./static/site/js/iida.startup.js"></script>
   <script src="./static/site/js/iida.topologyData1.js"></script>
   <script src="./static/site/js/iida.topologyData2.js"></script>
+  <script src="./static/site/js/iida.topologyData3.js"></script>
   <script src="./static/site/js/iida.nextui.js"></script>
   <script src="./static/site/js/iida.main.js"></script>
 
@@ -83,16 +84,17 @@
   <md-toolbar>
     <div class="md-toolbar-tools">
 
-      <!-- ロゴを表示する -->
+      <!-- ロゴを表示する。ボタンにすると全部大文字になってしまうので、単純なアンカーにする -->
       <h1><a href="#">{{:: tc.logoTitle }}</a></h1>
 
       <!-- 右寄せするためのspan -->
       <span flex></span>
 
-      <!-- リンク(仮置き) -->
-      <md-button ng-repeat="link in tc.links" aria-label="{{::link.label}}">
-        {{::link.title}}
-      </md-button>
+      <!-- リンク -->
+      <span ng-repeat="link in tc.links">
+        <md-button aria-label="{{:: link.label}}" ng-href="{{:: link.url}}" target="_blank">{{:: link.title}}</md-button>
+        <md-tooltip>{{:: link.label}}</md-tooltip>
+      </span>
 
       <!-- github -->
       <md-button aria-label="github" class="md-icon-button" ng-href="{{:: tc.githubUrl }}">
@@ -100,7 +102,7 @@
         <md-tooltip>github</md-tooltip>
       </md-button>
 
-      <!-- 設定用アイコン(仮置き) -->
+      <!-- 設定用アイコン -->
       <md-button aria-label="setting" class="md-icon-button" ng-controller="settingDialogController as sc" ng-click="sc.showDialog()">
         <md-icon md-font-icon="fa-gear" class="fa fa-2x"></md-icon>
         <md-tooltip>設定</md-tooltip>
@@ -177,7 +179,7 @@
 
     <!-- 左側 -->
     <div flex>
-      <h1>{{::nextCtrl.title}}</h1>
+      <h2>{{::nextCtrl.title}}</h2>
       <p>{{::nextCtrl.description}}</p>
       <div flex layout-fill iida-nx-shell></div>
     </div>
@@ -247,8 +249,9 @@
         <!-- topologyDataIndex -->
         <p>データ選択</p>
         <md-radio-group ng-model="sc.settingParam.topologyDataIndex">
-          <md-radio-button value="0"> ノードセットを使ったデータ </md-radio-button>
-          <md-radio-button value="1"> 2ノードを接続するデータ </md-radio-button>
+          <md-radio-button value="0"> 2ノード </md-radio-button>
+          <md-radio-button value="1"> 複数ノード </md-radio-button>
+          <md-radio-button value="2"> ノードセット </md-radio-button>
         </md-radio-group>
       </div>
     </md-dialog-content>
@@ -291,7 +294,7 @@
       <!-- class="md-dialog-content"を使うと、いい具合にパディングされるが、ここでは使わない -->
       <form name="editorForm">
         <md-input-container class="md-block">
-          <textarea name="editor" autocomplete="off" rows="3" ng-model="ec.obj" json-editor></textarea>
+          <textarea aria-label="editor" name="editor" autocomplete="off" rows="3" ng-model="ec.obj" json-editor></textarea>
         </md-input-container>
       </form>
     </md-dialog-content>
@@ -299,7 +302,7 @@
     <!-- ダイアログの最下部、フッタ部分にボタンを配置する -->
     <md-dialog-actions layout="row">
       <span flex></span>
-      <md-button class="md-primary" ng-disabled="editorForm.editor.$error.json" ng-click="ec.answer('ok')" md-autofocus>OK</md-button>
+      <md-button class="md-primary md-raised" ng-disabled="editorForm.editor.$error.json" ng-click="ec.answer('ok')" md-autofocus>OK</md-button>
       <md-button ng-click="ec.answer('cancel')">Cancel</md-button>
     </md-dialog-actions>
   </md-dialog>
