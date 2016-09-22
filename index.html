@@ -74,9 +74,10 @@
 </head>
 
 <!--
-  -- 画面レイアウトを制御する最上位のコントローラtopControllerをバインドする
-  -- style="overflow: hidden;" ウィンドウのスクロールバーは出さない。サイドナビがスクロールバーに追従しないため。スクロールバーが必要な場所にはmd-contentを使うこと。
-  -->
+    <body>には画面レイアウトを制御する最上位のコントローラtopControllerをバインドする。
+    style="overflow: hidden;" ウィンドウのスクロールバーは出さない。
+    サイドナビを使うとスクロールバーと相性が悪い。スクロールバーが必要な場所にはmd-contentを使うこと。
+-->
 <body flex layout-fill layout="column" ng-cloak ng-controller="topController as tc" style="overflow: hidden;">
 
   <!-- 縦並びの上から１個目は常時表示するナビゲーション用のツールバー -->
@@ -116,21 +117,18 @@
 
 </body>
 
+<!--
+  以下、先読みスクリプト
+-->
 
 <!--
-  -- ******************
-  -- 以下、先読みスクリプト
-  -- ******************
-  -->
-
-<!--
-  -- トップページ
-  -- index
-  -- url: '/',
-  -- templateUrl: 'index.tpl',
-  -- controller: 'indexController',
-  -- controllerAs: 'indexCtrl'
-  -->
+    トップページ
+    index
+    url: '/',
+    templateUrl: 'index.tpl',
+    controller: 'indexController',
+    controllerAs: 'indexCtrl'
+-->
 <script type="text/ng-template" id="index.tpl">
 
   <md-content md-component-id="index" flex layout="row" layout-margin layout-align="center start">
@@ -154,7 +152,8 @@
       </md-card-content>
 
       <md-card-actions layout="column" layout-align="start">
-        <md-button aria-label="NeXt practice" class="md-primary md-raised" ui-sref="next">練習開始</md-button>
+        <md-button aria-label="NeXt practice" class="md-primary md-raised" ng-if="!indexCtrl.isie" ui-sref="next">スタート</md-button>
+        <span ng-if="indexCtrl.isie">ブラウザがIEのため、ここから先には進めません。Chromeで再接続してください。</span>
       </md-card-actions>
 
     </md-card>
@@ -164,13 +163,13 @@
 
 
 <!--
-  -- NeXt UI練習ページ
-  -- next
-  -- url: '/next',
-  -- templateUrl: 'next.tpl',
-  -- controller: 'nextController',
-  -- controllerAs: 'nextCtrl'
-  -->
+  NeXt UI練習ページ
+  next
+  url: '/next',
+  templateUrl: 'next.tpl',
+  controller: 'nextController',
+  controllerAs: 'nextCtrl'
+-->
 <script type="text/ng-template" id="next.tpl">
 
   <!-- layout="row" 1行に収める -->
@@ -178,7 +177,7 @@
 
     <!-- 左側 -->
     <div flex>
-      <h2>{{::nextCtrl.title}}</h2>
+      <h3>{{::nextCtrl.title}}</h3>
       <p>{{::nextCtrl.description}}</p>
       <md-button aria-label="実験1" class="md-raised" ng-click="nextCtrl.doTest1()">実験1</md-button>
       <div flex layout-fill iida-nx-shell></div>
@@ -219,10 +218,10 @@
 
 
 <!--
-  -- 設定ダイアログのテンプレート
-  -- controllerAs: 'sc',
-  -- templateUrl: 'setting.tpl',
-  -- parent: angular.element(document.body)
+  設定ダイアログのテンプレート
+  controllerAs: 'sc',
+  templateUrl: 'setting.tpl',
+  parent: angular.element(document.body)
 -->
 <script type="text/ng-template" id="setting.tpl">
 
@@ -268,10 +267,10 @@
 
 
 <!--
-  -- 編集ダイアログのテンプレート
-  -- controllerAs: 'ec',
-  -- templateUrl: 'editor.tpl',
-  -- parent: angular.element(document.body)
+  編集ダイアログのテンプレート
+  controllerAs: 'ec',
+  templateUrl: 'editor.tpl',
+  parent: angular.element(document.body)
 -->
 <script type="text/ng-template" id="editor.tpl">
 
@@ -280,8 +279,7 @@
     <md-toolbar>
       <div class="md-toolbar-tools">
         <h2>{{:: ec.title}}</h2>
-        <span flex></span>
-        <span ng-show="editorForm.editor.$error.json">JSON is invalid!</span>
+        <span flex-offset="5" ng-show="editorForm.editor.$error.json">JSON is invalid!</span>
         <span flex></span>
         <md-button aria-label="close dialog" class="md-icon-button" ng-click="ec.cancel()">
           <md-icon md-font-icon="fa-times" class="fa fa-2x"></md-icon>
@@ -294,7 +292,7 @@
       <!-- class="md-dialog-content"を使うと、いい具合にパディングされるが、ここでは使わない -->
       <form name="editorForm">
         <md-input-container class="md-block">
-          <textarea aria-label="editor" name="editor" autocomplete="off" rows="3" ng-model="ec.obj" json-editor></textarea>
+          <textarea aria-label="editor" name="editor" autocomplete="off" ng-model="ec.obj" json-editor></textarea>
         </md-input-container>
       </form>
     </md-dialog-content>

@@ -242,6 +242,11 @@
     ctrl.date = '2016/09/19';
     ctrl.author = 'Takamitsu IIDA';
     ctrl.mail = 'iida@jp.fujitsu.com';
+
+    var msie = document.documentMode;
+    if (msie) {
+      ctrl.isie = true;
+    }
   }]);
 
   // データを格納するサービス
@@ -338,9 +343,17 @@
     // 初期状態ではfalseにして、usersデータのダウンロードに成功したらtrueに変える
     // ctrl.isDataFetched = true;
 
+    ctrl.didTest1 = false;
     ctrl.doTest1 = function() {
       var topology = topologyContainerService.topology;
       var pathLayer = topology.getLayer('paths');
+
+      pathLayer.clear();
+
+      if (ctrl.didTest1) {
+        ctrl.didTest1 = false;
+        return;
+      }
 
       var link1 = topology.getLink(0);
       if (!link1) {
@@ -362,9 +375,10 @@
         arrow: 'end'
       });
 
-      pathLayer.clear();
       pathLayer.addPath(path1);
       pathLayer.addPath(path2);
+
+      ctrl.didTest1 = true;
     };
   }]);
 
