@@ -57,8 +57,8 @@
   <script src="./static/angular-ui-router-0.2.18/angular-ui-router.min.js"></script>
 
   <!-- NeXt UI Toolkit -->
-  <script src="./static/next-0.9.1-Beryllium-SR1/js/next.min.js"></script>
-  <link rel="stylesheet" href="./static/next-0.9.1-Beryllium-SR1/css/next.min.css">
+  <script src="./static/next-0.10.0-Boron/js/next.min.js"></script>
+  <link rel="stylesheet" href="./static/next-0.10.0-Boron/css/next.min.css">
 
   <!-- サイトのCSS -->
   <link href="./static/site/css/site.css" rel="stylesheet">
@@ -243,13 +243,11 @@
         <md-switch ng-model="sc.settingParam.debug" aria-label="Switch debug">
           debug: {{ sc.settingParam.debug }}
         </md-switch>
-        <!-- showConf -->
-        <md-switch ng-model="sc.settingParam.showConf" aria-label="Switch show config">
-          showConf: {{ sc.settingParam.showConf }}
-        </md-switch>
+        <p><md-divider></md-divider></p>
         <!-- topologyDataIndex -->
+        <p>データ選択</p>
         <md-radio-group ng-model="sc.settingParam.topologyDataIndex">
-          <md-radio-button value="0" class="md-primary"> ノードセットを使ったデータ </md-radio-button>
+          <md-radio-button value="0"> ノードセットを使ったデータ </md-radio-button>
           <md-radio-button value="1"> 2ノードを接続するデータ </md-radio-button>
         </md-radio-group>
       </div>
