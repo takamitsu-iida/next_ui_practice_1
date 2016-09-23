@@ -123,6 +123,9 @@
     methods: {
       start: function(container) {
         container.attach(this);
+      },
+      stop: function(container) {
+        this.detach(container);
       }
     }
   });

@@ -412,11 +412,15 @@
   angular.module(moduleName).service('topologyContainerService', [function() {
     var svc = this;
 
-    // TopologyContainerクラスをインスタンス化する
-    svc.topologyContainer = new iida.TopologyContainer();
+    svc.init = function() {
+      // TopologyContainerクラスをインスタンス化する
+      svc.topologyContainer = new iida.TopologyContainer();
 
-    // その中には 'nx.graphic.Topology' クラスのオブジェクトが格納されているので、それを取り出しておく
-    svc.topology = svc.topologyContainer.topology();
+      // その中には 'nx.graphic.Topology' クラスのオブジェクトが格納されているので、それを取り出しておく
+      svc.topology = svc.topologyContainer.topology();
+    };
+
+    svc.init();
   }]);
 
   // NeXt UI用のディレクティブ
@@ -455,6 +459,14 @@
 
         // シェルとトポロジコンテナを紐付けて、動作開始
         shell.start(topologyContainer);
+
+        // ページ遷移でエレメントが消失するときには、$destroyが叩かれる
+        // shellからデタッチする
+        // サービスで保持しているtopologyContainerを新しいインスタンスに置き換える（クリアするのが面倒）
+        scope.$on('$destroy', function() {
+          shell.stop(topologyContainer);
+          topologyContainerService.init();
+        });
       }
     };
   }]);
