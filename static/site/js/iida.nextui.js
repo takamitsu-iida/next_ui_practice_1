@@ -66,7 +66,58 @@
     }
   });
 
-  // シェルの作成
+  // NodeStatusレイヤを定義する
+  // ノードにドットを付ける関数もこの中に定義する
+  nx.define('NodeStatus', nx.graphic.Topology.Layer, {
+    methods: {
+      draw: function() {
+        // nx.graphic.Topologyクラスのインスタンスを取得する
+        var topology = this.topology();
+        // eachNode()は全ノードをトラバースする。第二引数はコンテキスト。thisを渡しておけば、eachNode内でも同じthisを指す。
+        topology.eachNode(function(node) {
+          // nx.graphic.Circleクラスオブジェクトでドットを作成する
+          var dot = new nx.graphic.Circle({
+            r: 6,
+            cx: -20,
+            cy: -20
+          });
+          // 偶数ノードと奇数ノードで色を分ける
+          var color = (node.model().get('id') % 2 === 0) ? '#f00' : '#0f0';
+          dot.set('fill', color);
+
+          // dotをノードにアタッチする
+          dot.attach(node);
+
+          // nodeオブジェクトからdotを取り出せるようにしておく
+          node.dot = dot;
+        }, this);
+      },
+      undraw: function() {
+        var topology = this.topology();
+        topology.eachNode(function(node) {
+          if (node.dot) {
+            node.dot.detach(node);
+            delete node['dot'];
+          }
+        }, this);
+      },
+      turnGreen: function() {
+        var topology = this.topology();
+        topology.eachNode(function(node) {
+          node.dot.set('fill', '#0f0');
+        });
+      },
+      random: function() {
+        var colorTable = ['#C3A5E4', '#75C6EF', '#CBDA5C', '#ACAEB1 ', '#2CC86F'];
+        var topology = this.topology();
+        topology.eachNode(function(node) {
+          node.dot.set('fill', colorTable[Math.floor(Math.random() * 5)]);
+        });
+      }
+    }
+  });
+
+  // シェルの作成とコンテナのアタッチ
   // nx.ui.Applicationを継承したクラスを定義する
   iida.NxShell = nx.define(nx.ui.Application, {
     methods: {
@@ -75,4 +126,5 @@
       }
     }
   });
+  //
 })(nx, iida);

@@ -346,10 +346,14 @@
     ctrl.didTest1 = false;
     ctrl.doTest1 = function() {
       var topology = topologyContainerService.topology;
+
+      // 'paths'という名前の組み込みレイヤが存在する
       var pathLayer = topology.getLayer('paths');
 
+      // レイヤ上のオブジェクトを全部消去する
       pathLayer.clear();
 
+      // トグル
       if (ctrl.didTest1) {
         ctrl.didTest1 = false;
         return;
@@ -380,6 +384,27 @@
 
       ctrl.didTest1 = true;
     };
+
+    ctrl.didTest2 = false;
+    ctrl.doTest2 = function() {
+      var topology = topologyContainerService.topology;
+
+      // 'status'レイヤを取得する
+      var statusLayer = topology.getLayer('status');
+
+      // トグル
+      if (ctrl.didTest2) {
+        ctrl.didTest2 = false;
+        statusLayer.undraw();
+        return;
+      }
+
+      // iida.nextui.jsの中で定義しているメソッドを呼び出す
+      statusLayer.draw();
+
+      ctrl.didTest2 = true;
+    };
+    //
   }]);
 
   // サービス 'topologyContainerService'
@@ -417,6 +442,10 @@
             topology.data(d);
           }
         });
+
+        // 定義してある'NodeStatus'クラスを'status'という名前でアタッチして、あとで使えるようにしておく
+        // topology.getLayer('status');で取得できる
+        topology.attachLayer('status', 'NodeStatus');
 
         // NxShellをインスタンス化する
         var shell = new iida.NxShell();

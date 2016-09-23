@@ -180,7 +180,12 @@
     <div flex>
       <h3>{{::nextCtrl.title}}</h3>
       <p>{{::nextCtrl.description}}</p>
-      <md-button aria-label="実験1" class="md-raised" ng-click="nextCtrl.doTest1()">実験1</md-button>
+      <md-button aria-label="実験1" class="md-raised" ng-click="nextCtrl.doTest1()">
+        パス追加実験<md-tooltip>id=0のリンクの上にパスを描画します</md-tooltip>
+      </md-button>
+      <md-button aria-label="実験2" class="md-raised" ng-click="nextCtrl.doTest2()">
+        ステータス追加実験<md-tooltip>偶数番ノードに赤、奇数に緑のドットを付けます</md-tooltip>
+      </md-button>
       <div flex layout-fill iida-nx-shell></div>
     </div>
 

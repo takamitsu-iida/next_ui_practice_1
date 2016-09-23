@@ -1,6 +1,24 @@
 # next ui メモ
 
+特に重要なのは、nx.graphic.Topologyクラスのオブジェクト。
+APIのマニュアルを見れば、メソッドとプロパティが分かるけど、細かいところはnext.jsを見たほうが早い。
 
+
+[//]:# (@@@ 20160920)
+## 組み込みレイヤ
+
+next.jsでこのように定義されている。
+
+```js
+this.attachLayer("links", "nx.graphic.Topology.LinksLayer");
+this.attachLayer("linkSet", "nx.graphic.Topology.LinkSetLayer");
+this.attachLayer("groups", "nx.graphic.Topology.GroupsLayer");
+this.attachLayer("nodes", "nx.graphic.Topology.NodesLayer");
+this.attachLayer("nodeSet", "nx.graphic.Topology.NodeSetLayer");
+this.attachLayer("paths", "nx.graphic.Topology.PathLayer");
+```
+
+なので、``` topology.getLayer("paths");``` とすれば、パスを描画するレイヤを取得できる。
 
 
 [//]:# (@@@ 20160920)
