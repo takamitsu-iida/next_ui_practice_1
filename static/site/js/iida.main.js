@@ -425,7 +425,8 @@
 
   // NeXt UI用のディレクティブ
   // <div iida-nx-shell></div>
-  // dataServiceからデータを取得し、topologyContainerServiceからtopologyデータを取得する
+  // このディレクティブを複数使うことはできない。
+  // ディレクティブごとにid属性の値と紐付けて、サービスに複数のtopologyContainerオブジェクトを格納すればいいのだが、面倒。
   angular.module(moduleName).directive('iidaNxShell', ['dataService', 'topologyContainerService', function(dataService, topologyContainerService) {
     return {
       restrict: 'A',
