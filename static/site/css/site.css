@@ -375,3 +375,9 @@ md-bottom-sheet {
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
 }
+
+/* NeXt UI */
+
+.link[style*=dasharray] ~ .link {
+  stroke-dasharray: 1px, 1px;
+}

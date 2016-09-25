@@ -50,8 +50,20 @@
             // ノード間に複数の線がある場合に、どのように表示するか
             // 'curve' もしくは 'parallel' の２択
             linkType: 'parallel',
+            label: 'model.label',
             sourceLabel: 'model.sourceLabel',
-            targetLabel: 'model.targetLabel'
+            targetLabel: 'model.targetLabel',
+            color: function(edge) {
+              if (edge.get('up')) {
+                return 'green';
+              }
+              if (edge.get('down')) {
+                return 'red';
+              }
+            },
+            dotted: function(edge) {
+              return edge.get('dotted');
+            }
           }
         }
       }

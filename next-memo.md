@@ -3,6 +3,13 @@
 特に重要なのは、nx.graphic.Topologyクラスのオブジェクト。
 APIのマニュアルを見れば、メソッドとプロパティが分かるけど、細かいところはnext.jsを見たほうが早い。
 
+[//]:# (@@@ 20160925)
+## NeXtサポートチームによるjsfiddle
+
+とても参考になる。
+
+https://jsfiddle.net/user/nextsupport/fiddles/
+
 
 [//]:# (@@@ 20160920)
 ## 組み込みレイヤ

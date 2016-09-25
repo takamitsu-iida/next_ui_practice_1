@@ -74,6 +74,7 @@
   <script src="./static/site/js/iida.topologyData1.js"></script>
   <script src="./static/site/js/iida.topologyData2.js"></script>
   <script src="./static/site/js/iida.topologyData3.js"></script>
+  <script src="./static/site/js/iida.topologyData4.js"></script>
   <script src="./static/site/js/iida.topologyDataIcons.js"></script>
   <script src="./static/site/js/iida.nextui.js"></script>
   <script src="./static/site/js/iida.main.js"></script>
@@ -143,17 +144,17 @@
 
       <md-card-title>
         <md-card-title-text>
-          <span class="md-headline">{{ indexCtrl.title }}</span>
+          <span class="md-headline">{{:: indexCtrl.title }}</span>
         </md-card-title-text>
       </md-card-title>
 
       <md-card-content>
-        <p>{{ indexCtrl.description }}</p>
+        <p>{{:: indexCtrl.description }}</p>
         <md-list-item class="md-3-line">
           <div class="md-list-item-text" layout="column" layout-align="start start">
-            <h3>{{ indexCtrl.author }}</h3>
-            <h4>{{ indexCtrl.date }}</h4>
-            <p>{{ indexCtrl.mail }}</p>
+            <h3>{{:: indexCtrl.author }}</h3>
+            <h4>{{:: indexCtrl.date }}</h4>
+            <p>{{:: indexCtrl.mail }}</p>
           </div>
         </md-list-item>
       </md-card-content>
@@ -268,10 +269,11 @@
         <!-- topologyDataIndex -->
         <p>データ選択</p>
         <md-radio-group ng-model="sc.settingParam.topologyDataIndex">
-          <md-radio-button value="0"> 2ノード </md-radio-button>
-          <md-radio-button value="1"> 複数ノード </md-radio-button>
-          <md-radio-button value="2"> ノードセット </md-radio-button>
-          <md-radio-button value="3"> アイコン一覧 </md-radio-button>
+          <md-radio-button value="0"> 2ノード(簡易) </md-radio-button>
+          <md-radio-button value="1"> 3ノード(各種プロパティあり) </md-radio-button>
+          <md-radio-button value="2"> 5セット </md-radio-button>
+          <md-radio-button value="3"> ノードセット </md-radio-button>
+          <md-radio-button value="4"> アイコン一覧 </md-radio-button>
         </md-radio-group>
       </div>
     </md-dialog-content>

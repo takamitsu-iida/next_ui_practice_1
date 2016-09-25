@@ -206,7 +206,7 @@
 
   // <body>にバインドする最上位のコントローラ
   // ロゴやレイアウトを担当
-  angular.module(moduleName).controller('topController', ['settingParamService', '$mdMedia', '$window', function(settingParamService, $mdMedia, $window) {
+  angular.module(moduleName).controller('topController', ['settingParamService', '$scope', '$mdMedia', '$window', function(settingParamService, $scope, $mdMedia, $window) {
     var ctrl = this;
 
     // settingParamServiceをミックスインする
@@ -224,6 +224,21 @@
       label: 'NeXt UI Toolkit API Manual', // aria-labelとmd-tooltipに使用
       url: './static/next-0.10.0-Boron/doc/index.html'
     }];
+
+    // screenSize
+    // 'small'か'large'がセットされる
+    // CSSのクラス名を切り替えることで、見た目を調整できる
+    // #content {
+    //   padding: 8px 40px;
+    // }
+    // #content.small {
+    //   padding: 8px 16px;
+    // }
+    $scope.$watch(function() {
+      return $mdMedia('xs') ? 'small' : 'large';
+    }, function(size) {
+      self.screenSize = size;
+    });
 
     // ctrl.back()でひとつ前のページに戻る
     ctrl.back = function() {
