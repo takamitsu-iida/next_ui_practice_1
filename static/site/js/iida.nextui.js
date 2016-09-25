@@ -1,11 +1,13 @@
 /* global nx, iida */
 (function(nx, iida) {
-  // View定義
+  // ng.graphic.Topologyクラスのオブジェクトを格納するコンテナ
+  // データとTopologyオブジェクトの両方をひとまとめにしておくと便利
   // nx.ui.Componentクラスを継承して作成する
   iida.TopologyContainer = nx.define('TopologyContainer', nx.ui.Component, {
     properties: {
       // トポロジデータを格納するオブジェクト
       topologyData: {},
+      //
       // nx.graphic.Topologyオブジェクトを返すgetter
       // var topology = topologyContainer.topology();
       // topology.data(); でデータをゲット
@@ -20,7 +22,6 @@
     view: {
       props: {
         // CSSのクラスと紐付けるための設定
-        // angularのディレクティブもここに書く
         class: 'iida-nx-view flex layout-fill'
       },
       content: {
@@ -44,10 +45,13 @@
             label: 'model.id',
             iconType: 'model.iconType'
           },
+          linkInstanceClass: 'MyExtendLink', // 拡張したLinkクラスを使\う
           linkConfig: {
             // ノード間に複数の線がある場合に、どのように表示するか
             // 'curve' もしくは 'parallel' の２択
-            linkType: 'parallel'
+            linkType: 'parallel',
+            sourceLabel: 'model.sourceLabel',
+            targetLabel: 'model.targetLabel'
           }
         }
       }
@@ -61,7 +65,7 @@
         // 書式としては、以下のどちらでもデータをセットできる
         // this.topology().data(データオブジェクト);
         // this.topologyData(データオブジェクト);
-        // 'ready'を待ってからデータをセットすることにする
+        // 'ready'を待ってからデータをセットすることにして、ここではデータをセットしない
       }
     }
   });
@@ -113,6 +117,69 @@
         topology.eachNode(function(node) {
           node.dot.set('fill', colorTable[Math.floor(Math.random() * 5)]);
         });
+      }
+    }
+  });
+
+  // https://communities.cisco.com/thread/65299
+  // 両端に文字を追加したリンクの定義
+  nx.define('MyExtendLink', nx.graphic.Topology.Link, {
+    properties: {
+      sourceLabel: null,
+      targetLabel: null
+    },
+    view: function(view) {
+      view.content.push({
+        name: 'source',
+        type: 'nx.graphic.Text',
+        props: {
+          'class': 'sourceLabel',
+          'alignment-baseline': 'text-after-edge',
+          'text-anchor': 'start'
+        }
+      }, {
+        name: 'target',
+        type: 'nx.graphic.Text',
+        props: {
+          'class': 'targetLabel',
+          'alignment-baseline': 'text-after-edge',
+          'text-anchor': 'end'
+        }
+      });
+      return view;
+    },
+    methods: {
+      update: function() {
+        this.inherited();
+
+        var el;
+        var point;
+        var line = this.line();
+        var angle = line.angle();
+        var stageScale = this.stageScale();
+
+        // pad line
+        line = line.pad(18 * stageScale, 18 * stageScale);
+
+        if (this.sourceLabel()) {
+          el = this.view('source');
+          point = line.start;
+          el.set('x', point.x);
+          el.set('y', point.y);
+          el.set('text', this.sourceLabel());
+          el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
+          el.setStyle('font-size', 12 * stageScale);
+        }
+
+        if (this.targetLabel()) {
+          el = this.view('target');
+          point = line.end;
+          el.set('x', point.x);
+          el.set('y', point.y);
+          el.set('text', this.targetLabel());
+          el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
+          el.setStyle('font-size', 12 * stageScale);
+        }
       }
     }
   });

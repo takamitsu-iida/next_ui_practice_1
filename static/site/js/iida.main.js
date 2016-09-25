@@ -439,6 +439,7 @@
       svc.topologyContainer = new iida.TopologyContainer();
 
       // その中には 'nx.graphic.Topology' クラスのオブジェクトが格納されているので、それを取り出しておく
+      // 使うのは主にこっち
       svc.topology = svc.topologyContainer.topology();
     };
 

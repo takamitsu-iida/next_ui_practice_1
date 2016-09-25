@@ -3,10 +3,10 @@
   var topologyData = {
     nodes: [
       {id: 0, x: 100, y: 180, iconType: 'Router', name: 'R-1'},
-      {id: 1, x: 200, y: 180, iconType: 'Router', name: 'R-2'}
+      {id: 1, x: 200, y: 180, iconType: 'Switch', name: 'R-2'}
     ],
     links: [
-      {id: 0, source: 0, target: 1}
+      {id: 0, source: 0, target: 1, sourceLabel: 'G1/0/1', targetLabel: 'G1/0/2'}
     ]
   };
 
