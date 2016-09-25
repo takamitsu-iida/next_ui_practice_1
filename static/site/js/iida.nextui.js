@@ -1,5 +1,18 @@
 /* global nx, iida */
 (function(nx, iida) {
+  // シェルの作成とコンテナのアタッチ
+  // nx.ui.Applicationを継承したクラスを定義する
+  iida.NxShell = nx.define(nx.ui.Application, {
+    methods: {
+      start: function(container) {
+        container.attach(this);
+      },
+      stop: function(container) {
+        this.detach(container);
+      }
+    }
+  });
+
   // ng.graphic.Topologyクラスのオブジェクトを格納するコンテナ
   // データとTopologyオブジェクトの両方をひとまとめにしておくと便利
   // nx.ui.Componentクラスを継承して作成する
@@ -46,9 +59,14 @@
             label: 'model.id',
             iconType: 'model.iconType'
           },
-          linkInstanceClass: 'MyExtendLink', // 拡張したLinkクラスを使\う
+          tooltipManagerConfig: {
+            // 独自拡張したツールチップを表示する
+            // nodeTooltipContentClass: 'MyNodeTooltip'
+            // linkTooltipContentClass: 'MyLinkTooltip'
+          },
+          linkInstanceClass: 'MyExtendLink', // 拡張したLinkクラスを使う
           linkConfig: {
-            linkType: 'parallel',  // // 'curve' もしくは 'parallel' の２択
+            linkType: 'parallel', // // 'curve' もしくは 'parallel' の２択
             label: 'model.label',
             sourcePortId: 'model.sourcePortId',
             targetPortId: 'model.targetPortId',
@@ -82,7 +100,9 @@
     }
   });
 
-  // NodeStatusレイヤを定義する
+  // ここから先は機能を拡張するための定義。
+
+  // NodeStatusレイヤの定義
   // ノードにドットを付ける関数もこの中に定義する
   nx.define('NodeStatus', nx.graphic.Topology.Layer, {
     methods: {
@@ -196,15 +216,117 @@
     }
   });
 
-  // シェルの作成とコンテナのアタッチ
-  // nx.ui.Applicationを継承したクラスを定義する
-  iida.NxShell = nx.define(nx.ui.Application, {
+  // ノードのツールチップの定義
+  // 要調整
+  // まだ使えなる状態ではない
+  nx.define('MyNodeTooltip', nx.ui.Component, {
+    properties: {
+      node: {},
+      topology: {}
+    },
+    view: {
+      content: [{
+        tag: 'h1',
+        content: '{#node.id}'
+      }, {
+        tag: 'p',
+        content: [{
+          tag: 'label',
+          content: 'Username:'
+        }, {
+          tag: 'span',
+          content: '{username}'
+        }]
+      }, {
+        tag: 'p',
+        content: '{#topology.width}'
+      }, {
+        tag: 'table',
+        props: {
+          class: 'col-md-12',
+          border: '1'
+        },
+        content: [{
+          tag: 'thead',
+          content: {
+            tag: 'tr',
+            content: [{
+              tag: 'td'
+            }, {
+              tag: 'td',
+              content: 'pkts'
+            }, {
+              tag: 'td',
+              content: 'bytes'
+            }]
+          }
+        }, {
+          tag: 'tbody',
+          props: {
+            items: '{#node.model.data}',
+            template: {
+              tag: 'tr',
+              content: [{
+                tag: 'td',
+                content: '{nodeName}'
+              }, {
+                tag: 'td',
+                content: '{packets}'
+              }, {
+                tag: 'td',
+                content: '{bytes}'
+              }]
+            }
+          }
+        }]
+      }]
+    }
+  });
+
+  // リンクのツールチップの定義
+  // 要調整
+  // まだ使えなる状態ではない
+  nx.define('MyLinkTooltip', nx.ui.Component, {
+    properties: {
+      link: {},
+      topology: {}
+    },
+    view: {
+      content: [{
+        tag: 'p',
+        content: [{
+          tag: 'label',
+          content: 'Source'
+        }, {
+          tag: 'span',
+          content: '{#link.sourceNodeID}'
+        }, {
+          tag: 'label',
+          content: 'Target'
+        }, {
+          tag: 'span',
+          content: '{#link.targetNodeID}'
+        }]
+      }, {
+        tag: 'p',
+        content: '{#topology.width}'
+      }, {
+        tag: 'p',
+        content: {
+          tag: 'a',
+          content: 'Action',
+          props: {
+            href: '#'
+          },
+          events: {
+            click: '{#open}'
+          }
+        }
+      }]
+    },
     methods: {
-      start: function(container) {
-        container.attach(this);
-      },
-      stop: function(container) {
-        this.detach(container);
+      open: function(sender, event) {
+        console.log(sender);
       }
     }
   });
