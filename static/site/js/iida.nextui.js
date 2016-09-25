@@ -31,6 +31,7 @@
           showIcon: true,
           theme: 'green',
           identityKey: 'id',
+          // dataProcessor: 'force', // 推奨はforceとなっているけど、指定するとおかしくなる 'nextforce' or 'force' or 'quick' or 'circle'
           adaptive: true, // width 100% if true
           data: '{#topologyData}', // プロパティに紐付ける。 {#プロパティ名}は関数として扱われる
           nodeConfig: {
@@ -47,19 +48,18 @@
           },
           linkInstanceClass: 'MyExtendLink', // 拡張したLinkクラスを使\う
           linkConfig: {
-            // ノード間に複数の線がある場合に、どのように表示するか
-            // 'curve' もしくは 'parallel' の２択
-            linkType: 'parallel',
+            linkType: 'parallel',  // // 'curve' もしくは 'parallel' の２択
             label: 'model.label',
-            sourceLabel: 'model.sourceLabel',
-            targetLabel: 'model.targetLabel',
-            color: function(edge) {
+            sourcePortId: 'model.sourcePortId',
+            targetPortId: 'model.targetPortId',
+            color: function(edge, model) {
               if (edge.get('up')) {
                 return 'green';
               }
               if (edge.get('down')) {
                 return 'red';
               }
+              return nx.path(model, 'model.color');
             },
             dotted: function(edge) {
               return edge.get('dotted');
@@ -137,15 +137,15 @@
   // 両端に文字を追加したリンクの定義
   nx.define('MyExtendLink', nx.graphic.Topology.Link, {
     properties: {
-      sourceLabel: null,
-      targetLabel: null
+      sourcePortId: null,
+      targetPortId: null
     },
     view: function(view) {
       view.content.push({
         name: 'source',
         type: 'nx.graphic.Text',
         props: {
-          'class': 'sourceLabel',
+          'class': 'sourcePortId',
           'alignment-baseline': 'text-after-edge',
           'text-anchor': 'start'
         }
@@ -153,7 +153,7 @@
         name: 'target',
         type: 'nx.graphic.Text',
         props: {
-          'class': 'targetLabel',
+          'class': 'targetPortId',
           'alignment-baseline': 'text-after-edge',
           'text-anchor': 'end'
         }
@@ -173,22 +173,22 @@
         // pad line
         line = line.pad(18 * stageScale, 18 * stageScale);
 
-        if (this.sourceLabel()) {
+        if (this.sourcePortId()) {
           el = this.view('source');
           point = line.start;
           el.set('x', point.x);
           el.set('y', point.y);
-          el.set('text', this.sourceLabel());
+          el.set('text', this.sourcePortId());
           el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
           el.setStyle('font-size', 12 * stageScale);
         }
 
-        if (this.targetLabel()) {
+        if (this.targetPortId()) {
           el = this.view('target');
           point = line.end;
           el.set('x', point.x);
           el.set('y', point.y);
-          el.set('text', this.targetLabel());
+          el.set('text', this.targetPortId());
           el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
           el.setStyle('font-size', 12 * stageScale);
         }

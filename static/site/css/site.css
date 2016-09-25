@@ -381,3 +381,13 @@ md-bottom-sheet {
 .link[style*=dasharray] ~ .link {
   stroke-dasharray: 1px, 1px;
 }
+
+.sourceLabel {
+  font-size: 11px;
+  fill: #0011ff;
+}
+
+.targetLabel {
+  font-size: 11px;
+  fill: #0011ff;
+}

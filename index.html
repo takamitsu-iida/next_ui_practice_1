@@ -75,6 +75,7 @@
   <script src="./static/site/js/iida.topologyData2.js"></script>
   <script src="./static/site/js/iida.topologyData3.js"></script>
   <script src="./static/site/js/iida.topologyData4.js"></script>
+  <script src="./static/site/js/iida.topologyData5.js"></script>
   <script src="./static/site/js/iida.topologyDataIcons.js"></script>
   <script src="./static/site/js/iida.nextui.js"></script>
   <script src="./static/site/js/iida.main.js"></script>
@@ -189,17 +190,22 @@
       <h3>{{::nextCtrl.title}}</h3>
       <p>{{::nextCtrl.description}}</p>
       <md-button aria-label="実験1" class="md-raised" ng-click="nextCtrl.doTest1()">
-        パス追加実験<md-tooltip>id=0のリンクの上にパスを描画します</md-tooltip>
+        パス追加<md-tooltip>id=0のリンクの上にパスを描画します</md-tooltip>
       </md-button>
       <md-button aria-label="実験2" class="md-raised" ng-click="nextCtrl.doTest2()">
-        ステータス追加実験<md-tooltip>偶数番ノードに赤、奇数に緑のドットを付けます</md-tooltip>
+        ステータス追加<md-tooltip>偶数番ノードに赤、奇数に緑のドットを付けます</md-tooltip>
       </md-button>
       <md-button aria-label="実験3" class="md-raised" ng-click="nextCtrl.doTest3()">
-        選択中のノードを取得<md-tooltip>選択中のノード一覧を取得してコンソールに出力します</md-tooltip>
+        選択中ノード<md-tooltip>選択中のノード一覧を取得してコンソールに出力します</md-tooltip>
       </md-button>
       <md-button aria-label="実験4" class="md-raised" ng-click="nextCtrl.doTest4()">
-        id=0のノードを選択<md-tooltip>id=0のノードを選択します</md-tooltip>
+        ノード選択<md-tooltip>id=0のノードを選択します</md-tooltip>
       </md-button>
+      <!--
+      <md-button aria-label="実験5" class="md-raised" ng-click="nextCtrl.doTest5()">
+        Hierarchical<md-tooltip>HierarchicalLayoutを選択します</md-tooltip>
+      </md-button>
+      -->
       <!-- NeXt UIのシェルを組み込むカスタムディレクティブ -->
       <iida-nx-shell topology-container="nextCtrl.getTopologyContainer()" flex layout-fill></iida-nx-shell>
     </div>
@@ -271,9 +277,10 @@
         <md-radio-group ng-model="sc.settingParam.topologyDataIndex">
           <md-radio-button value="0"> 2ノード(簡易) </md-radio-button>
           <md-radio-button value="1"> 3ノード(各種プロパティあり) </md-radio-button>
-          <md-radio-button value="2"> 5セット </md-radio-button>
+          <md-radio-button value="2"> 5ノード </md-radio-button>
           <md-radio-button value="3"> ノードセット </md-radio-button>
-          <md-radio-button value="4"> アイコン一覧 </md-radio-button>
+          <!-- <md-radio-button value="4"> 階層型 </md-radio-button> -->
+          <md-radio-button value="5"> アイコン一覧 </md-radio-button>
         </md-radio-group>
       </div>
     </md-dialog-content>

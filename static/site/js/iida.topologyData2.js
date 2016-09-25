@@ -7,9 +7,9 @@
       {id: 2, x: 200, y: 100, iconType: 'server', name: 'PC1'}
     ],
     links: [
-      {id: 0, source: 0, target: 1, label: 'R1-SW1', sourceLabel: 'G1/0/1', targetLabel: 'G1/0/2'},
+      {id: 0, source: 0, target: 1, label: 'R1-SW1', sourcePortId: 'G1/0/1', targetPortId: 'G1/0/2', color: 'purple'},
       {id: 1, source: 1, target: 2, up: true},
-      {id: 2, source: 1, target: 2, up: true, dotted: true}
+      {id: 2, source: 1, target: 2, down: true, dotted: true}
     ]
   };
 

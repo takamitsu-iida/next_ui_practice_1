@@ -429,7 +429,7 @@
       console.log(topology.selectedNodes().toArray());
     };
 
-    var didTest4 = false;
+    ctrl.didTest4 = false;
     ctrl.doTest4 = function() {
       var topology = topologyContainerService.topology;
       var node = topology.getNode(0);
@@ -438,9 +438,25 @@
         return;
       }
 
-      didTest4 = !didTest4;
-      node.selected(didTest4);
+      ctrl.didTest4 = !ctrl.didTest4;
+      node.selected(ctrl.didTest4);
     };
+
+    ctrl.didTest5 = false;
+    ctrl.doTest5 = function() {
+      var topology = topologyContainerService.topology;
+      topology.clear();
+      topology.data(null);
+      var layout = topology.getLayout('hierarchicalLayout');
+      layout.direction('vertical');
+      layout.sortOrder(['Core', 'Distribution', 'Access']);
+      layout.levelBy(function(node, model) {
+        return model.get('role');
+      });
+      topology.activateLayout('hierarchicalLayout');
+      topology.data(iida.topologyDatas[4]);
+    };
+
     //
   }]);
 
