@@ -52,11 +52,11 @@
             // デフォルトはidなので、それをnameに変更する
             // modelという文字列は、固定
             label: 'model.name',
-            iconType: 'model.iconType' // 'model.device_type'
+            iconType: 'model.iconType' // 'model.device'
           },
           nodeSetConfig: {
             // ノードセットの設定
-            label: 'model.id',
+            label: 'model.name',
             iconType: 'model.iconType'
           },
           tooltipManagerConfig: {
@@ -66,7 +66,7 @@
           },
           linkInstanceClass: 'MyExtendLink', // 拡張したLinkクラスを使う
           linkConfig: {
-            linkType: 'parallel', // // 'curve' もしくは 'parallel' の２択
+            linkType: 'parallel', // 'curve' もしくは 'parallel' の２択
             label: 'model.label',
             sourcePortId: 'model.sourcePortId',
             targetPortId: 'model.targetPortId',
@@ -200,7 +200,8 @@
           el.set('y', point.y);
           el.set('text', this.sourcePortId());
           el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
-          el.setStyle('font-size', 12 * stageScale);
+          // el.setStyle('font-size', 12 * stageScale); // devnetの例はこうなっているが、たぶん間違い
+          el.dom().setStyle('font-size', 12 * stageScale); // 正しくはこうだと思う
         }
 
         if (this.targetPortId()) {
@@ -210,7 +211,7 @@
           el.set('y', point.y);
           el.set('text', this.targetPortId());
           el.set('transform', 'rotate(' + angle + ' ' + point.x + ',' + point.y + ')');
-          el.setStyle('font-size', 12 * stageScale);
+          el.dom().setStyle('font-size', 12 * stageScale);
         }
       }
     }

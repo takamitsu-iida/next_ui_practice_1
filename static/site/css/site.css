@@ -376,18 +376,18 @@ md-bottom-sheet {
   border-bottom-right-radius: 3px;
 }
 
-/* NeXt UI */
+/*
+ * NeXt UI
+ */
 
 .link[style*=dasharray] ~ .link {
   stroke-dasharray: 1px, 1px;
 }
 
-.sourceLabel {
-  font-size: 11px;
+.sourcePortId {
   fill: #0011ff;
 }
 
-.targetLabel {
-  font-size: 11px;
+.targetPortId {
   fill: #0011ff;
 }
