@@ -192,7 +192,14 @@
       <md-button aria-label="実験2" class="md-raised" ng-click="nextCtrl.doTest2()">
         ステータス追加実験<md-tooltip>偶数番ノードに赤、奇数に緑のドットを付けます</md-tooltip>
       </md-button>
-      <div flex layout-fill iida-nx-shell></div>
+      <md-button aria-label="実験3" class="md-raised" ng-click="nextCtrl.doTest3()">
+        選択中のノードを取得<md-tooltip>選択中のノード一覧を取得してコンソールに出力します</md-tooltip>
+      </md-button>
+      <md-button aria-label="実験4" class="md-raised" ng-click="nextCtrl.doTest4()">
+        id=0のノードを選択<md-tooltip>id=0のノードを選択します</md-tooltip>
+      </md-button>
+      <!-- NeXt UIのシェルを組み込むカスタムディレクティブ -->
+      <iida-nx-shell topology-container="nextCtrl.getTopologyContainer()" flex layout-fill></iida-nx-shell>
     </div>
 
     <!-- 右側 -->

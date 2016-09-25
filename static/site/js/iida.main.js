@@ -404,6 +404,28 @@
 
       ctrl.didTest2 = true;
     };
+
+    ctrl.doTest3 = function() {
+      var topology = topologyContainerService.topology;
+
+      // topology.selectedNodes()の戻り値はnx.data.ObservableCollectionクラスのオブジェクト
+      // 配列で得たいならtoArray()する
+      // 他にもselectとか、eachとか、getItemとか、使える。
+      console.log(topology.selectedNodes().toArray());
+    };
+
+    var didTest4 = false;
+    ctrl.doTest4 = function() {
+      var topology = topologyContainerService.topology;
+      var node = topology.getNode(0);
+      if (!node) {
+        console.log('node not found');
+        return;
+      }
+
+      didTest4 = !didTest4;
+      node.selected(didTest4);
+    };
     //
   }]);
 
@@ -425,11 +447,12 @@
 
   // NeXt UI用のディレクティブ
   // <div iida-nx-shell></div>
-  // このディレクティブを複数使うことはできない。
-  // ディレクティブごとにid属性の値と紐付けて、サービスに複数のtopologyContainerオブジェクトを格納すればいいのだが、面倒。
+  // topologyContainerをサービスに格納している都合上、このディレクティブを複数使うことはできない。
+  // 複数作りたいなら、親になっているコントローラからtopologyContainerを引き渡してもらえばいい。
+  // ディレクティブはscope: {container: '='} と定義して、Viewで<iida-nx-shell container="ctrl.getContainer()">とすればいい。
   angular.module(moduleName).directive('iidaNxShell', ['dataService', 'topologyContainerService', function(dataService, topologyContainerService) {
     return {
-      restrict: 'A',
+      restrict: 'EA',
       link: function(scope, element, attrs) {
         var topologyContainer = topologyContainerService.topologyContainer;
         var topology = topologyContainerService.topology;
@@ -451,6 +474,13 @@
         // 定義してある'NodeStatus'クラスを'status'という名前でアタッチして、あとで使えるようにしておく
         // topology.getLayer('status');で取得できる
         topology.attachLayer('status', 'NodeStatus');
+
+        /*
+        topology.on('selectNode', function(event, sender) {
+          console.log(sender.id());
+          console.log(event);
+        });
+        */
 
         // NxShellをインスタンス化する
         var shell = new iida.NxShell();
