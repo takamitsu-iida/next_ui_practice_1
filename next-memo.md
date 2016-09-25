@@ -31,7 +31,7 @@ https://github.com/zverevalexei/next-ui-demos
 ## クリックしたノードの情報を得る
 
 ```js
-n.on('selectNode',
+topology.on('selectNode',
   function(sender, event){
     console.log(sender.id())
   }
@@ -45,7 +45,7 @@ n.on('selectNode',
 ```js
 var app = new nx.ui.Application();
 app.container(document.getElementById('app'));
-topo.attach(app);
+topology.attach(app);
 ```
 
 [//]:# (@@@)
@@ -113,7 +113,7 @@ $.ajax({
 2. check if vertex generated : vertex = generated()
 3. if yes, just use topo.getNode(ID)
 4. if not use this property find generated parent nodeset : var vs = vertex.generatedRootVertexSet(),
-5 use topo.getNode(vs.id()) find parent nodeSet
+5. use topo.getNode(vs.id()) find parent nodeSet
 
 
 
