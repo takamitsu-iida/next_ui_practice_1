@@ -41,12 +41,14 @@
         name: 'topology', // オブジェクト名。 view('topology')でこのオブジェクトが返る
         type: 'nx.graphic.Topology',
         props: {
+          data: '{#topologyData}', // プロパティに紐付ける。 {#プロパティ名}はgetter/setterを持った関数として扱われる
           showIcon: true,
           theme: 'green',
           identityKey: 'id',
           // dataProcessor: 'force', // 推奨はforceとなっているけど、指定するとおかしくなる 'nextforce' or 'force' or 'quick' or 'circle'
           adaptive: true, // width 100% if true
-          data: '{#topologyData}', // プロパティに紐付ける。 {#プロパティ名}は関数として扱われる
+          // http://codepen.io/NEXTSUPPORT/pen/PNVXvx
+          // nodeInstanceClass: 'MyExtendNode',  // ノードを独自拡張した場合には、クラスを指定する
           nodeConfig: {
             // ラベルに使うキーを設定
             // デフォルトはidなので、それをnameに変更する
@@ -55,14 +57,13 @@
             iconType: 'model.iconType' // 'model.device'
           },
           nodeSetConfig: {
-            // ノードセットの設定
             label: 'model.name',
             iconType: 'model.iconType'
           },
           tooltipManagerConfig: {
             // 独自拡張したツールチップを表示する
-            // nodeTooltipContentClass: 'MyNodeTooltip'
-            // linkTooltipContentClass: 'MyLinkTooltip'
+            nodeTooltipContentClass: 'MyNodeTooltip',
+            linkTooltipContentClass: 'MyLinkTooltip'
           },
           linkInstanceClass: 'MyExtendLink', // 拡張したLinkクラスを使う
           linkConfig: {
@@ -89,13 +90,12 @@
     methods: {
       init: function(options) {
         this.inherited(options);
-        this.loadData();
+        // this.loadData();  // 'ready'を待ってからデータをセットすることにして、ここではデータをセットしない
       },
       loadData: function() {
         // 書式としては、以下のどちらでもデータをセットできる
         // this.topology().data(データオブジェクト);
         // this.topologyData(データオブジェクト);
-        // 'ready'を待ってからデータをセットすることにして、ここではデータをセットしない
       }
     }
   });
@@ -218,116 +218,226 @@
   });
 
   // ノードのツールチップの定義
-  // 要調整
-  // まだ使えなる状態ではない
+  // http://codepen.io/NEXTSUPPORT/pen/LkaAOK
+  // ノードのモデルを差し替えてツールチップに表示する内容を変更する
+  // next.jsの中にある 'nx.graphic.Topology.NodeTooltipContent' とほぼ同じコード。
   nx.define('MyNodeTooltip', nx.ui.Component, {
     properties: {
-      node: {},
-      topology: {}
+      title: '',
+      node: {
+        set: function(value) {
+          // 元データ
+          var model = value.model();
+
+          // 加工後のデータ
+          var dataCollection = new nx.data.Collection(filterModel(model.getData()));
+
+          // viewの中にある 'list' 部分に加工後のデータをセットする
+          this.view('list').set('items', dataCollection);
+
+          // ツールチップのタイトルはlabel()を使う
+          if (value.label()) {
+            this.title(value.label());
+          }
+
+          function filterModel(model) {
+            // 差し替え後のモデル
+            var newModel = [];
+
+            newModel.push({
+              label: 'Name',
+              value: (model.name) ? model.name : model.id
+            });
+
+            newModel.push({
+              label: 'Type',
+              value: (model.iconType) ? model.iconType : 'unknown'
+            });
+
+            if (model.isProvisioned) {
+              newModel.push({
+                label: 'Provisioned',
+                value: (model.isProvisioned === true) ? 'Yes' : 'No'
+              });
+            }
+
+            if (model.status) {
+              newModel.push({
+                label: 'Status',
+                value: model.status
+              });
+            }
+
+            // console.log(newModel);
+            return newModel;
+          }
+        }
+      }
     },
+    // 'view' defines the appearance of the tooltip
     view: {
       content: [{
-        tag: 'h1',
-        content: '{#node.id}'
-      }, {
-        tag: 'p',
-        content: [{
-          tag: 'label',
-          content: 'Username:'
-        }, {
-          tag: 'span',
-          content: '{username}'
-        }]
-      }, {
-        tag: 'p',
-        content: '{#topology.width}'
-      }, {
-        tag: 'table',
+        name: 'header',
         props: {
-          class: 'col-md-12',
-          border: '1'
+          class: 'n-topology-tooltip-header'
         },
         content: [{
-          tag: 'thead',
-          content: {
-            tag: 'tr',
-            content: [{
-              tag: 'td'
-            }, {
-              tag: 'td',
-              content: 'pkts'
-            }, {
-              tag: 'td',
-              content: 'bytes'
-            }]
-          }
-        }, {
-          tag: 'tbody',
+          tag: 'span',
           props: {
-            items: '{#node.model.data}',
+            class: 'n-topology-tooltip-header-text'
+          },
+          name: 'title',
+          content: '{#title}'
+        }]
+      }, {
+        name: 'content',
+        props: {
+          class: 'n-topology-tooltip-content n-list'
+        },
+        content: [{
+          name: 'list',
+          tag: 'ul',
+          props: {
+            class: 'n-list-wrap',
             template: {
-              tag: 'tr',
+              tag: 'li',
+              props: {
+                class: 'n-list-item-i',
+                role: 'listitem'
+              },
               content: [{
-                tag: 'td',
-                content: '{nodeName}'
+                tag: 'label',
+                content: '{label}: '
               }, {
-                tag: 'td',
-                content: '{packets}'
-              }, {
-                tag: 'td',
-                content: '{bytes}'
+                tag: 'span',
+                content: '{value}'
               }]
             }
           }
         }]
       }]
+    },
+    methods: {
+      init: function(args) {
+        this.inherited(args);
+      }
     }
   });
 
   // リンクのツールチップの定義
-  // 要調整
-  // まだ使えなる状態ではない
+  // nx.graphic.Topology.LinkTooltipContent とほぼ同じコード
   nx.define('MyLinkTooltip', nx.ui.Component, {
     properties: {
-      link: {},
-      topology: {}
-    },
-    view: {
-      content: [{
-        tag: 'p',
-        content: [{
-          tag: 'label',
-          content: 'Source'
-        }, {
-          tag: 'span',
-          content: '{#link.sourceNodeID}'
-        }, {
-          tag: 'label',
-          content: 'Target'
-        }, {
-          tag: 'span',
-          content: '{#link.targetNodeID}'
-        }]
-      }, {
-        tag: 'p',
-        content: '{#topology.width}'
-      }, {
-        tag: 'p',
-        content: {
-          tag: 'a',
-          content: 'Action',
-          props: {
-            href: '#'
-          },
-          events: {
-            click: '{#open}'
+      topology: {},
+      title: '',
+      link: {
+        set: function(value) {
+          // 元データ
+          var model = value.model();
+
+          // 加工後のデータ
+          var dataCollection = new nx.data.Collection(filterModel(model.getData()));
+
+          // viewの中にある 'list' 部分に加工後のデータをセットする
+          this.view('list').set('items', dataCollection);
+
+          // ツールチップのタイトルはlabel()を使う
+          if (value.label()) {
+            this.title(value.label());
+          }
+
+          function filterModel(model) {
+            // 差し替え後のモデル
+            var newModel = [];
+
+            newModel.push({
+              label: 'Name',
+              value: (model.name) ? model.name : model.id
+            });
+
+            newModel.push({
+              label: 'Source',
+              value: model.source
+            });
+
+            newModel.push({
+              label: 'Target',
+              value: model.target
+            });
+
+            if (model.up || model.down) {
+              newModel.push({
+                label: 'Status',
+                value: (model.up) ? 'UP' : 'DOWN'
+              });
+            }
+
+            if (model.sourcePortId) {
+              newModel.push({
+                label: 'sourcePort',
+                value: model.sourcePortId
+              });
+            }
+
+            if (model.targetPortId) {
+              newModel.push({
+                label: 'targetPort',
+                value: model.targetPortId
+              });
+            }
+
+            // console.log(newModel);
+            return newModel;
           }
         }
+      }
+    },
+    // 'view' defines the appearance of the tooltip
+    view: {
+      content: [{
+        name: 'header',
+        props: {
+          class: 'n-topology-tooltip-header'
+        },
+        content: [{
+          tag: 'span',
+          props: {
+            class: 'n-topology-tooltip-header-text'
+          },
+          name: 'title',
+          content: '{#title}'
+        }]
+      }, {
+        name: 'content',
+        props: {
+          class: 'n-topology-tooltip-content n-list'
+        },
+        content: [{
+          name: 'list',
+          tag: 'ul',
+          props: {
+            class: 'n-list-wrap',
+            template: {
+              tag: 'li',
+              props: {
+                class: 'n-list-item-i',
+                role: 'listitem'
+              },
+              content: [{
+                tag: 'label',
+                content: '{label}: '
+              }, {
+                tag: 'span',
+                content: '{value}'
+              }]
+            }
+          }
+        }]
       }]
     },
     methods: {
-      open: function(sender, event) {
-        console.log(sender);
+      init: function(args) {
+        this.inherited(args);
       }
     }
   });

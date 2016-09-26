@@ -512,6 +512,11 @@
           console.log(sender.id());
           console.log(event);
         });
+        topology.tooltipManager().on('openNodeToolTip', function(event, node) {
+          var v = event.nodeTooltip().resources;
+          console.log(v);
+          console.log(node.id());
+        });
         */
 
         // NxShellをインスタンス化する
@@ -529,6 +534,20 @@
         scope.$on('$destroy', function() {
           shell.stop(topologyContainer);
           topologyContainerService.init();
+        });
+      }
+    };
+  }]);
+
+  angular.module(moduleName).directive('nodename', ['$compile', function($compile) {
+    return {
+      restrict: 'E',
+      scope: {nid: '@'},
+      link: function(scope, element, attrs) {
+        console.log(scope.nid);
+
+        scope.$on('$destroy', function() {
+          console.log('nodeTooltip destroyed');
         });
       }
     };
