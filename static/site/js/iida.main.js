@@ -457,6 +457,14 @@
       topology.data(iida.topologyDatas[4]);
     };
 
+    ctrl.doTest6 = function() {
+      var topology = topologyContainerService.topology;
+      topology.clear();
+      topology.layoutType(null);
+      topology.activateLayout();
+      var d = dataService.getTopologyDataNx();
+      topology.data(d);
+    };
     //
   }]);
 
@@ -482,7 +490,7 @@
   // topologyContainerをサービスに格納している都合上、このディレクティブを複数使うことはできない。
   // 複数作りたいなら、親になっているコントローラからtopologyContainerを引き渡してもらえばいい。
   // ディレクティブはscope: {container: '='} と定義して、Viewで<iida-nx-shell container="ctrl.getContainer()">とすればいい。
-  angular.module(moduleName).directive('iidaNxShell', ['dataService', 'topologyContainerService', function(dataService, topologyContainerService) {
+  angular.module(moduleName).directive('iidaNxShell', ['dataService', 'topologyContainerService', '$window', '$timeout', function(dataService, topologyContainerService, $window, $timeout) {
     return {
       restrict: 'EA',
       link: function(scope, element, attrs) {
@@ -503,8 +511,19 @@
           }
         });
 
-        // 定義してある'NodeStatus'クラスを'status'という名前でアタッチして、あとで使えるようにしておく
-        // topology.getLayer('status');で取得できる
+        // ブラウザのサイズに変更があったらadaptToContainer()を呼んでサイズをあわせる
+        // 頻繁にコールすると重たいので500ミリ秒の遅延を持たせる
+        var resizeTimer;
+        var DEBOUNCE_INTERVAL = 500;
+        $window.addEventListener('resize', function() {
+          resizeTimer = resizeTimer || $timeout(function() {
+            resizeTimer = null;
+            topology.adaptToContainer();
+          }, DEBOUNCE_INTERVAL);
+        });
+
+        // 定義済みの'NodeStatus'クラスを'status'という名前でアタッチして、あとで使えるようにしておく
+        // topology.getLayer('status');でレイヤを取得できる
         topology.attachLayer('status', 'NodeStatus');
 
         /*

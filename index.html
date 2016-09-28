@@ -66,8 +66,10 @@
   <script src="./static/angular-ui-router-0.2.18/angular-ui-router.min.js"></script>
 
   <!-- NeXt UI Toolkit -->
-  <script src="./static/next-0.10.0-Boron/js/next.min.js"></script>
   <link rel="stylesheet" href="./static/next-0.10.0-Boron/css/next.min.css">
+  <!-- <script src="./static/next-0.10.0-Boron/js/next.min.js"></script> -->
+  <!-- EnterpriseNetworkLayoutがバグってるので、修正したものを使う -->
+  <script src="./static/site/js/next.js"></script>
 
   <!-- サイトのCSS -->
   <link href="./static/site/css/site.css" rel="stylesheet">
@@ -209,6 +211,9 @@
         Hierarchical<md-tooltip>HierarchicalLayoutを選択します</md-tooltip>
       </md-button>
       -->
+      <md-button aria-label="実験6" class="md-raised" ng-click="nextCtrl.doTest6()">
+        レイアウト初期化<md-tooltip>レイアアウトを初期化します</md-tooltip>
+      </md-button>
       <!-- NeXt UIのシェルを組み込むカスタムディレクティブ -->
       <iida-nx-shell topology-container="nextCtrl.getTopologyContainer()" flex layout-fill></iida-nx-shell>
     </div>

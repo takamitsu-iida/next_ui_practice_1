@@ -2,6 +2,16 @@
 
 特に重要なのは、nx.graphic.Topologyクラスのオブジェクト。
 APIのマニュアルを見れば、メソッドとプロパティが分かるけど、細かいところはnext.jsを見たほうが早い。
+EnterpriseNetworkLayoutはバグってるので、修正が必要。
+
+
+[//]:# (@@@ 20160928)
+## ノードを消す
+
+データを操作するわけではなく、見せる・見せないを制御する。
+
+topology.graph().getVertex(0).visible(false);
+
 
 [//]:# (@@@ 20160925)
 ## NeXtサポートチームによるjsfiddle

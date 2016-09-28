@@ -38,15 +38,25 @@
         class: 'iida-nx-view flex layout-fill'
       },
       content: {
-        name: 'topology', // オブジェクト名。 view('topology')でこのオブジェクトが返る
+        name: 'topology',  // オブジェクト名。 view('topology')でこのオブジェクトが返る
         type: 'nx.graphic.Topology',
         props: {
-          data: '{#topologyData}', // プロパティに紐付ける。 {#プロパティ名}はgetter/setterを持った関数として扱われる
+          data: '{#topologyData}',  // プロパティに紐付ける。 {#プロパティ名}はgetter/setterを持った関数として扱われる
           showIcon: true,
           theme: 'green',
           identityKey: 'id',
-          // dataProcessor: 'force', // 推奨はforceとなっているけど、指定するとおかしくなる 'nextforce' or 'force' or 'quick' or 'circle'
-          adaptive: true, // width 100% if true
+          adaptive: true,  // width 100% if true
+          // リリース版のnext.jsはenerpriseNetworkLayoutにバグがある
+          // layoutType: null, // null, 'force', 'USMap', 'hierarchicalLayout', 'enterpriseNetworkLayout',
+          // layoutType: 'enterpriseNetworkLayout',
+          // layoutType: 'hierarchicalLayout',
+          layoutConfig: {
+            // enterpriseNetworkLayoutのときに必須
+            // その他レイアウトのときには必要ない
+            // direction: 'horizontal',  // or 'vertical'  hierarchicalLayoutのときのみ
+            sortOrder: ['BORDER', 'CORE', 'DISTRIBUTION', 'ACCESS', 'HOST'],
+            levelBy: 'model.role'
+          },
           // http://codepen.io/NEXTSUPPORT/pen/PNVXvx
           // nodeInstanceClass: 'MyExtendNode',  // ノードを独自拡張した場合には、クラスを指定する
           nodeConfig: {
@@ -54,7 +64,7 @@
             // デフォルトはidなので、それをnameに変更する
             // modelという文字列は、固定
             label: 'model.name',
-            iconType: 'model.iconType' // 'model.device'
+            iconType: 'model.iconType'  // 'model.device'
           },
           nodeSetConfig: {
             label: 'model.name',
@@ -65,9 +75,9 @@
             nodeTooltipContentClass: 'MyNodeTooltip',
             linkTooltipContentClass: 'MyLinkTooltip'
           },
-          linkInstanceClass: 'MyExtendLink', // 拡張したLinkクラスを使う
+          linkInstanceClass: 'MyExtendLink',  // 拡張したLinkクラスを使う
           linkConfig: {
-            linkType: 'parallel', // 'curve' もしくは 'parallel' の２択
+            linkType: 'parallel',  // 'curve' もしくは 'parallel' の２択
             label: 'model.label',
             sourcePortId: 'model.sourcePortId',
             targetPortId: 'model.targetPortId',
