@@ -57,6 +57,7 @@
             sortOrder: ['BORDER', 'CORE', 'DISTRIBUTION', 'ACCESS', 'HOST'],
             levelBy: 'model.role'
           },
+          // ノードを独自拡張
           // http://codepen.io/NEXTSUPPORT/pen/PNVXvx
           // nodeInstanceClass: 'MyExtendNode',  // ノードを独自拡張した場合には、クラスを指定する
           nodeConfig: {
