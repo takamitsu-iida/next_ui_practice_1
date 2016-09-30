@@ -499,8 +499,9 @@
 
         // データの紐付けは任意のタイミングで行えるが、初期データの設定は'ready'イベント後に実施する
         topology.on('ready', function() {
-          var d = dataService.getTopologyDataNx();
-          topology.data(d);
+          // $watchするなら、これはいらない
+          // var d = dataService.getTopologyDataNx();
+          // topology.data(d);
         });
 
         // 変更を検知したら、再バインドする
