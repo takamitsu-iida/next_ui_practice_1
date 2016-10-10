@@ -74,7 +74,8 @@
           tooltipManagerConfig: {
             // 独自拡張したツールチップを表示する
             nodeTooltipContentClass: 'MyNodeTooltip',
-            linkTooltipContentClass: 'MyLinkTooltip'
+            linkTooltipContentClass: 'MyLinkTooltip',
+            linkSetTooltipContentClass: 'MyLinkSetTooltip'
           },
           linkInstanceClass: 'MyExtendLink',  // 拡張したLinkクラスを使う
           linkConfig: {
@@ -422,6 +423,71 @@
         name: 'content',
         props: {
           class: 'n-topology-tooltip-content n-list'
+        },
+        content: [{
+          name: 'list',
+          tag: 'ul',
+          props: {
+            class: 'n-list-wrap',
+            template: {
+              tag: 'li',
+              props: {
+                class: 'n-list-item-i',
+                role: 'listitem'
+              },
+              content: [{
+                tag: 'label',
+                content: '{label}: '
+              }, {
+                tag: 'span',
+                content: '{value}'
+              }]
+            }
+          }
+        }]
+      }]
+    },
+    methods: {
+      init: function(args) {
+        this.inherited(args);
+      }
+    }
+  });
+
+  // リンクセットのツールチップの定義
+  // nx.graphic.Topology.LinkSetTooltipContent とほぼ同じコード
+  nx.define('MyLinkSetTooltip', nx.ui.Component, {
+    properties: {
+      topology: {},
+      title: '',
+      linkSet: {
+        set: function(value) {
+          var items = [];
+
+          // ここを書き変えて内容を差し替える
+          nx.each(value.model().edges(), function(edge) {
+            items.push(
+              {
+                label: 'Source - Target: ',
+                value: edge.sourceID() + ' - ' + edge.targetID()
+              }
+            );
+          });
+          this.view('list').items(items);
+        }
+      }
+    },
+    view: {
+      content: [{
+        name: 'content',
+        props: {
+          class: 'n-topology-tooltip-content n-list',
+          style: {
+            'width': '200px',
+            'maxHeight': '247px',
+            'overflow': 'auto',
+            'overflow-x': 'hidden'
+          }
         },
         content: [{
           name: 'list',

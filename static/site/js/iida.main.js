@@ -240,6 +240,12 @@
       self.screenSize = size;
     });
 
+    // ブラウザがIEかどうかの簡易チェック
+    var msie = document.documentMode;
+    if (msie) {
+      ctrl.isie = true;
+    }
+
     // ctrl.back()でひとつ前のページに戻る
     ctrl.back = function() {
       $window.history.back();
@@ -257,11 +263,6 @@
     ctrl.date = '2016/09/19';
     ctrl.author = 'Takamitsu IIDA';
     ctrl.mail = 'iida@jp.fujitsu.com';
-
-    var msie = document.documentMode;
-    if (msie) {
-      ctrl.isie = true;
-    }
   }]);
 
   // データを格納するサービス

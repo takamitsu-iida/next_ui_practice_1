@@ -166,9 +166,9 @@
       </md-card-content>
 
       <md-card-actions layout="column" layout-align="start">
-        <md-button aria-label="NeXt practice" class="md-primary md-raised" ng-if="!indexCtrl.isie" ui-sref="next">スタート</md-button>
-        <md-tooltip ng-if="!indexCtrl.isie">ここをクリックして開始</md-tooltip>
-        <span ng-if="indexCtrl.isie">ブラウザがIEのため、ここから先には進めません。Chromeで再接続してください。</span>
+        <md-button aria-label="NeXt practice" class="md-primary md-raised" ng-if="!tc.isie" ui-sref="next">スタート</md-button>
+        <md-tooltip ng-if="!tc.isie">ここをクリックして開始</md-tooltip>
+        <span ng-if="tc.isie">ブラウザがIEのため、ここから先には進めません。Chromeで再接続してください。</span>
       </md-card-actions>
 
     </md-card>
