@@ -489,11 +489,22 @@
   // NeXt UI用のディレクティブ
   // <div iida-nx-shell></div>
   // topologyContainerをサービスに格納している都合上、このディレクティブを複数使うことはできない。
-  // 複数作りたいなら、親になっているコントローラからtopologyContainerを引き渡してもらえばいい。
-  // ディレクティブはscope: {container: '='} と定義して、Viewで<iida-nx-shell container="ctrl.getContainer()">とすればいい。
+  //
+  // このディレクティブを複数使いたい場合は、topologyContainerの格納場所を親コントローラに変更すればよい。
+  // <iida-nx-shell topology-container="ctrl.getTopologyContainer()" topology-data="ctrl.getTopologyData()"></iida-nx-shell>
+  // 親コントローラの中では次のように定義して、トポロジコンテナを提供できるようにする
+  // ctrl.topologyContainer = new iida.TopologyContainer();
+  // ctrl.getTopologyContainer = function() {
+  //   return ctrl.topologyContainer;
+  // };
+  // トポロジデータも同じく親コントローラから渡せばよい
   angular.module(moduleName).directive('iidaNxShell', ['dataService', 'topologyContainerService', '$window', '$timeout', function(dataService, topologyContainerService, $window, $timeout) {
     return {
-      restrict: 'EA',
+      restrict: 'E',
+      scope: {
+        topologyContainer: '=',
+        topologyData: '='
+      },
       link: function(scope, element, attrs) {
         var topologyContainer = topologyContainerService.topologyContainer;
         var topology = topologyContainerService.topology;
