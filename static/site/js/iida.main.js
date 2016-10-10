@@ -293,7 +293,7 @@
     // キャッシュデータを取得する関数
     // angular.copy()でディープコピーを作り、それを返却する
     svc.getTopologyDataNx = function() {
-      return angular.copy(svc.getTopologyData(), svc.getTopologyDataNx);
+      return angular.copy(svc.getTopologyData(), svc.topologyDataNx);
     };
   }]);
 
