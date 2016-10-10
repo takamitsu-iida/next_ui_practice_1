@@ -571,20 +571,6 @@
     };
   }]);
 
-  angular.module(moduleName).directive('nodename', ['$compile', function($compile) {
-    return {
-      restrict: 'E',
-      scope: {nid: '@'},
-      link: function(scope, element, attrs) {
-        console.log(scope.nid);
-
-        scope.$on('$destroy', function() {
-          console.log('nodeTooltip destroyed');
-        });
-      }
-    };
-  }]);
-
   // jsonEditorディレクティブ
   // <textarea json-editor>
   // http://codepen.io/maxbates/pen/AfEHz
