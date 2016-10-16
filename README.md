@@ -35,7 +35,7 @@ httpサーバは不要です。
 - [ ] angular-utils-pagination 0.11.1
 - [x] angular ui-router 0.2.18
 - [ ] angular-loading-bar　0.9.0
-- [x] font-awesome 4.6.3
-- [ ] bootstrap 3.3.6 (CSSだけ利用)
+- [ ] font-awesome 4.6.3
+- [ ] bootstrap 3.3.6 (使う場合はCSSのみ)
 - [ ] next-0.9.1-Beryllium-SR1
 - [x] next-0.10.0-Boron

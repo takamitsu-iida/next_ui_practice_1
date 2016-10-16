@@ -26,12 +26,6 @@
   <!-- ブラウザのウィンドウやタブに表示されるタイトル -->
   <title>NeXt trial</title>
 
-  <!-- Font Awesome -->
-  <!-- ローカルからの読み込み -->
-  <link href="./static/font-awesome-4.6.3/css/font-awesome.css" rel="stylesheet">
-  <!-- CDNからの読み込み -->
-  <!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"> -->
-
   <!-- AngularJS -->
   <!-- ローカルからの読み込み -->
   <script src="./static/angular-1.5.8/angular.min.js"></script>
@@ -58,6 +52,40 @@
   <!-- CDNからの読み込み -->
   <!-- <script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.1/angular-material.min.js"></script> -->
   <!-- <link href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.1/angular-material.min.css" rel="stylesheet"> -->
+
+  <!-- Angular material用SVGアイコンの登録 -->
+  <!-- https://design.google.com/icons/ -->
+  <script type="text/ng-template" id="ic_menu_white_24px.svg.tpl">
+    <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+  </script>
+
+  <script type="text/ng-template" id="ic_close_white_24px.svg.tpl">
+    <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+  </script>
+
+  <script type="text/ng-template" id="ic_settings_white_24px.svg.tpl">
+    <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+  </script>
+
+  <script type="text/ng-template" id="ic_play_circle_filled_white_24px.svg.tpl">
+    <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+  </script>
+
+  <script type="text/ng-template" id="ic_clear_white_24px.svg.tpl">
+    <svg fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+  </script>
+
+  <script type="text/ng-template" id="ic_arrow_back_black_24px.svg.tpl">
+    <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+  </script>
+
+  <script type="text/ng-template" id="ic_mode_edit_black_24px.svg.tpl">
+    <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+  </script>
+
+  <script type="text/ng-template" id="github.svg.tpl">
+    <svg width="1792" height="1792" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1664 896q0 251-146.5 451.5t-378.5 277.5q-27 5-39.5-7t-12.5-30v-211q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 89t.5 54q0 18-13 30t-40 7q-232-77-378.5-277.5t-146.5-451.5q0-209 103-385.5t279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>
+  </script>
 
   <!-- Angular materialはRobotoフォントを前提にしているが、使わない -->
   <!-- <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900,300italic,400italic,500italic,700italic,900italic"> -->
@@ -113,13 +141,13 @@
 
       <!-- github -->
       <md-button aria-label="github" class="md-icon-button" ng-href="{{:: tc.githubUrl }}" target="_blank">
-        <md-icon md-font-icon="fa-github" class="fa fa-2x"></md-icon>
+        <md-icon md-svg-icon="github"></md-icon>
         <md-tooltip>github</md-tooltip>
       </md-button>
 
       <!-- 設定用アイコン -->
       <md-button aria-label="setting" class="md-icon-button" ng-controller="settingDialogController as sc" ng-click="sc.showDialog()">
-        <md-icon md-font-icon="fa-gear" class="fa fa-2x"></md-icon>
+        <md-icon md-svg-icon="setting"></md-icon>
         <md-tooltip>設定</md-tooltip>
       </md-button>
 
@@ -224,7 +252,7 @@
       <div flex layout="row" layout-align="start center">
         <h3>データ表示</h3> <span flex></span>
         <md-button aria-label="edit" class="md-icon-button" ng-controller="editorDialogController as ec" ng-click="ec.showDialog()">
-          <md-icon md-font-icon="fa-pencil-square-o" class="fa fa-2x"></md-icon>
+          <md-icon md-svg-icon="edit"></md-icon>
           <md-tooltip>編集</md-tooltip>
         </md-button>
       </div>
@@ -266,7 +294,7 @@
       <div class="md-toolbar-tools">
         <h2>Setting</h2> <span flex></span>
         <md-button aria-label="close dialog" class="md-icon-button" ng-click="sc.cancel()">
-          <md-icon md-font-icon="fa-times" class="fa fa-2x"></md-icon>
+          <md-icon md-svg-icon="close"></md-icon>
         </md-button>
       </div>
     </md-toolbar>
@@ -320,7 +348,7 @@
         <span flex-offset="5" ng-show="editorForm.editor.$error.json">JSON is invalid!</span>
         <span flex></span>
         <md-button aria-label="close dialog" class="md-icon-button" ng-click="ec.cancel()">
-          <md-icon md-font-icon="fa-times" class="fa fa-2x"></md-icon>
+          <md-icon md-svg-icon="close"></md-icon>
         </md-button>
       </div>
     </md-toolbar>
