@@ -533,13 +533,14 @@
         // ブラウザのサイズに変更があったらadaptToContainer()を呼んでサイズをあわせる
         // 頻繁にコールすると重たいので500ミリ秒の遅延を持たせる
         var resizeTimer;
-        var DEBOUNCE_INTERVAL = 500;
-        $window.addEventListener('resize', function() {
+        var DEBOUNCE_INTERVAL = 200;
+        var resizeHandler = function() {
           resizeTimer = resizeTimer || $timeout(function() {
             resizeTimer = null;
             topology.adaptToContainer();
           }, DEBOUNCE_INTERVAL);
-        });
+        };
+        $window.addEventListener('resize', resizeHandler);
 
         // 定義済みの'NodeStatus'クラスを'status'という名前でアタッチして、あとで使えるようにしておく
         // topology.getLayer('status');でレイヤを取得できる
@@ -567,10 +568,19 @@
         shell.start(topologyContainer);
 
         // ページ遷移でエレメントが消失するときには、$destroyが叩かれる
-        // shellからデタッチする
-        // サービスで保持しているtopologyContainerを新しいインスタンスに置き換える（クリアするのが面倒）
         scope.$on('$destroy', function() {
+          // console.log('directive destroyed');
+          // イベントハンドラを削除する
+          $window.removeEventListener('resize', resizeHandler);
+
+          // 描画されているものを全て削除する
+          // これをやらないと、ツールチップとか、画面上に残ってしまうことがある
+          topology.clear();
+
+          // shellからデタッチする
           shell.stop(topologyContainer);
+
+          // サービスで保持しているtopologyContainerを新しいインスタンスに置き換える（クリアするのが面倒）
           topologyContainerService.init();
         });
       }
